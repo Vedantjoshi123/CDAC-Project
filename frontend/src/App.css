@@ -1,0 +1,128 @@
+
+/* Root variables for light theme */
+:root {
+  --color-primary: #00895E;
+  --color-bg: #FFFFFF;
+  --color-text: #222222;
+  --color-text-secondary: #555555;
+  --color-border: #E0E0E0;
+
+  --font-family-base: 'Inter', sans-serif;
+
+  --transition-speed: 0.3s;
+}
+
+/* Dark theme variables */
+[data-theme='dark'] {
+  --color-primary: #00895E;
+  --color-bg: #383737;
+  --color-text: #d7d5d5;
+  --color-text-secondary: #A0A0A0;
+  --color-border: #474545;
+}
+
+/* Base styles */
+html, body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links and buttons */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+a:hover {
+  color: #005B3B; /* slightly darker shade of primary */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+/* Paragraphs */
+p {
+  color: var(--color-text-secondary);
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+/* Buttons */
+button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.6em 1.2em;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+button:hover {
+  background-color: #005B3B; /* darker shade */
+}
+
+/* Inputs */
+input, select, textarea {
+  font-family: var(--font-family-base);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.5em 0.75em;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: border-color var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px var(--color-primary);
+}
+
+/* Utility classes for text */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Container max-width and padding */
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Scrollbar for dark theme */
+[data-theme='dark']::-webkit-scrollbar {
+  width: 8px;
+}
+[data-theme='dark']::-webkit-scrollbar-track {
+  background: #2e2e2e;
+}
+[data-theme='dark']::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 10px;
+}
+
+/* Smooth transitions for theme change */
+[data-theme='dark'], body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
