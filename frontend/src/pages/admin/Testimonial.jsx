@@ -1,8 +1,11 @@
 import React from 'react'
+import TestimonialsSection from '../../components/student/TestimonialsSection'
 
 function Testimonial() {
   return (
-    <div>Testimonial</div>
+    <div>
+      <TestimonialsSection/>
+    </div>
   )
 }
 
