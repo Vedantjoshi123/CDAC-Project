@@ -69,7 +69,7 @@ const CourseDetails = () => {
             </div>
 
             <p className="text-sm text-gray-700 dark:text-gray-300 pt-1">
-              Course by <span className="text-blue-600 dark:text-blue-400 underline">Elon Musk</span>
+              Course by <span className="text-blue-600 dark:text-blue-400 underline">Teacher Name</span>
             </p>
 
             <div className="pt-8">

@@ -38,7 +38,7 @@ public class AuthService {
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
-        UserEntity user = userEntityDao.findByEmailAndIsActiveTrue(request.getEmail()).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+        UserEntity user = userEntityDao.findByEmail(request.getEmail()).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid email or password");

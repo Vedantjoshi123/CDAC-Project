@@ -12,11 +12,11 @@ const Home = () => {
   return (
     <div className='flex flex-col items-center space-y-7 text-center bg-[var(--color-bg)] text-[var(--color-text)]'>
       <Hero/>
-      <Companies/>
       <CoursesSection/>
+      <Companies/>
       <TestimonialsSection/>
       <ContactUs/>
-      <CallToAction/>
+      {/* <CallToAction/> */}
     </div>
   )
 }
