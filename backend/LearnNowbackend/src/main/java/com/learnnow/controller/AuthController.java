@@ -1,6 +1,8 @@
 package com.learnnow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learnnow.dto.LoginRequestDTO;
 import com.learnnow.dto.LoginResponseDTO;
 import com.learnnow.dto.RegisterRequestDTO;
+import com.learnnow.dto.UserEntityResponseDTO;
 import com.learnnow.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -28,8 +31,9 @@ public class AuthController {
 	    }
 	    
 	    @PostMapping("/register")
-	    public LoginResponseDTO register(@RequestBody @Valid RegisterRequestDTO request) {
-	        return authService.register(request);
+	    public ResponseEntity<UserEntityResponseDTO> register(@RequestBody RegisterRequestDTO requestDto) {
+	        UserEntityResponseDTO response = authService.register(requestDto);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	    }
 
 }
