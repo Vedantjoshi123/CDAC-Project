@@ -758,3 +758,53 @@ export const dummyCourses = [
         "courseThumbnail": "https://img.youtube.com/vi/WbV3zRgpw_E/maxresdefault.jpg"
     }
 ]
+
+
+
+// src/data/assets.js
+export const adminCourses = [
+  {
+    id: 1,
+    title: 'React Basics',
+    teacher: 'John Doe',
+    students: 120,
+    status: 'Active',
+  },
+  {
+    id: 2,
+    title: 'Spring Boot Advanced',
+    teacher: 'Jane Smith',
+    students: 85,
+    status: 'Inactive',
+  },
+];
+
+export const adminTeachers = [
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    courseCount: 3,
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    courseCount: 5,
+  },
+];
+
+export const adminTestimonials = [
+  {
+    id: 1,
+    student: 'Alice',
+    content: 'Great course and teaching experience!',
+    course: 'React Basics',
+  },
+  {
+    id: 2,
+    student: 'Bob',
+    content: 'The instructor was very helpful.',
+    course: 'Spring Boot Advanced',
+  },
+];

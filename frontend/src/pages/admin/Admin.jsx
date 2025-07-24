@@ -1,20 +1,20 @@
-import React from 'react'
-import Testimonial from './Testimonial'
-import AddTestimonial from './AddTestimonial'
-import { Link, Outlet } from 'react-router-dom'
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import AdminSidebar from '../../components/admin/AdminSidebar';
 
-function Admin() {
+const Admin = () => {
   return (
-   <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
-      <div className="flex gap-4 mb-4">
-        <Link to="add-testimonial" className="text-blue-600 underline">Add Testimonial</Link>
-        <Link to="" className="text-blue-600 underline">View Testimonials</Link>
-      </div>
+    <div className="flex min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
+      <AdminSidebar />
 
-      <Outlet />
+      <main className="flex-1 p-6 overflow-y-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center text-[var(--color-primary)]">
+          Admin Panel
+        </h1>
+          <Outlet />
+      </main>
     </div>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

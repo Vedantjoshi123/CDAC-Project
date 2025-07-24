@@ -19,10 +19,13 @@ import Login from './pages/common/Login';
 import Admin from './pages/admin/Admin';
 import PrivateRoute from './routes/PrivateRoute';
 import RoleBasedRoute from './routes/RoleBasedRoute';
-import Testimonial from './pages/admin/Testimonial';
-import AddTestimonial from './pages/admin/AddTestimonial';
 import Feedbacks from './pages/teacher/Feedbacks';
 import Settings from './pages/teacher/Settings';
+import AdminSettings from './pages/admin/AdminSettings';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminTestimonial from './pages/admin/AdminTestimonial';
+import AdminTeachersList from './pages/admin/AdminTeachersList';
+import AdminCoursesList from './pages/admin/AdminCoursesList';
 
 const App = () => {
   return (
@@ -57,14 +60,18 @@ const App = () => {
           <Route path="student-enrolled" element={<StudentsEnrolled />} />
         </Route>
 
-        {/* <Route path="/admin" element={
+        <Route path="/admin" element={
           <RoleBasedRoute allowedRoles={['ADMIN']}><Admin /></RoleBasedRoute>
-        } /> */}
+        } />
 
         <Route path="/admin" element={<Admin />}>
-          <Route index element={<Testimonial />} />
-          <Route path="add-testimonial" element={<AddTestimonial />} />
+          <Route index element={<AdminDashboard />} />
+          <Route path="testimonials" element={<AdminTestimonial />} />
+          <Route path="teachers" element={<AdminTeachersList />} />
+          <Route path="courses" element={<AdminCoursesList />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
+
       </Routes> 
       <Footer />
     </div>
