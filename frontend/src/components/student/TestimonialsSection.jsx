@@ -1,26 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { assets } from '../../assets/assets';
-import { getTestimonials } from '../../services/getTestimonials';
+import { testimonialService } from '../../services/testimonialService';
 
 const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getTestimonials();
-      if (response.status === 'success') {
-        setTestimonials(response.data);
-      } else {
-        console.error('Failed to fetch testimonials:', response.message);
-      }
-    };
+  // Fetch testimonials from API
+  const fetchTestimonials = async () => {
+    try {
+      const data = await testimonialService.getTestimonials();
+      setTestimonials(data);
+    } catch (error) {
+      console.error('Failed to fetch testimonials:', error.message);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchTestimonials();
   }, []);
 
   return (
     <div className="pb-14 px-8 md:px-10">
-      <h2 className="text-3xl font-medium text-[var(--color-text)]">Testimonials</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-medium text-[var(--color-text)]">Testimonials</h2>
+
+        {/* Add New Testimonial Button (Optional) */}
+        {/* 
+        <button
+          onClick={handleAddTestimonial} // Implement this function to open a modal
+          className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all"
+        >
+          + Add Testimonial
+        </button> 
+        */}
+      </div>
 
       <p className="md:text-base text-[var(--color-text-secondary)] mt-3">
         Hear from our learners as they share their journeys of transformation, success, and how our <br />
@@ -35,15 +48,11 @@ const TestimonialsSection = () => {
               pb-6 rounded-lg bg-[var(--color-bg-light)] dark:bg-[var(--color-bg-dark)]
               shadow-[0px_4px_15px_0px] shadow-black/5 overflow-hidden"
           >
-            {/* Top User Info */}
+            {/* User Info */}
             <div className="flex items-center gap-4 px-5 py-4 bg-[var(--color-bg-alt)] dark:bg-[var(--color-bg-darker)]">
               <img
                 className="h-12 w-12 rounded-full object-cover"
-                src={
-                  testimonial.image
-                    ? testimonial.image
-                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random&color=fff&rounded=true&size=128`
-                }
+                src={testimonial.image}
                 alt={testimonial.name}
               />
               <div>
@@ -52,7 +61,7 @@ const TestimonialsSection = () => {
               </div>
             </div>
 
-            {/* Rating & Feedback */}
+            {/* Rating and Feedback */}
             <div className="p-5 pb-7">
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
@@ -67,7 +76,7 @@ const TestimonialsSection = () => {
               <p className="text-[var(--color-text-secondary)] mt-5">{testimonial.feedback}</p>
             </div>
 
-            {/* Read more link */}
+            {/* Read More */}
             <a
               href="#"
               className="text-[var(--color-primary)] underline px-5 hover:opacity-90 transition-opacity duration-300"
