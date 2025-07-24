@@ -31,5 +31,26 @@ export const testimonialService = {
       console.error('Error adding testimonial:', error);
       throw error;
     }
+  },
+  async updateTestimonial(id, data) {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error editing testimonial:', error);
+    throw error;
   }
+},
+
+async deleteTestimonial(id) {
+  try {
+    const response = await axios.delete(`${baseUrl}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting testimonial:', error);
+    throw error;
+  }
+}
+
+  
 };

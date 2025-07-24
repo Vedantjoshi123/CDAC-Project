@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../../context/AppContext';
 import { Line } from 'rc-progress';
-import Footer from '../../components/common/Footer';
-
 const MyEnrollments = () => {
   const { enrolledCourses, calculateCourseDuration, navigate } = useContext(AppContext);
 
@@ -21,7 +19,7 @@ const MyEnrollments = () => {
   return (
     <>
       <div
-        className="min-h-screen pt-20 md:px-36 px-6"
+        className="min-h-screen pt-10 md:px-36 px-6"
         style={{
           backgroundColor: 'var(--color-bg)',
           color: 'var(--color-text)',

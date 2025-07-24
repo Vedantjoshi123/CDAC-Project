@@ -1,5 +1,7 @@
+// AddTestimonialModal.jsx
 import React, { useState } from 'react';
 import { testimonialService } from '../../services/testimonialService';
+import { toast } from 'react-toastify';
 
 const AddTestimonialModal = ({ onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -21,17 +23,17 @@ const AddTestimonialModal = ({ onClose, onAdd }) => {
     try {
       await testimonialService.addTestimonial(formData);
       toast.success('Testimonial added successfully');
-      onAdd(); // refresh testimonial list
-      onClose(); // close modal
+      onAdd();
+      onClose();
     } catch (err) {
-       toast.error('Failed to add testimonial');
+      toast.error('Failed to add testimonial');
     }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-md w-96">
-        <h3 className="text-lg font-semibold mb-4">Add Testimonial</h3>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded shadow-md w-96">
+        <h3 className="text-lg font-semibold mb-4 text-center text-gray-800 dark:text-white">Add Testimonial</h3>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
@@ -39,7 +41,7 @@ const AddTestimonialModal = ({ onClose, onAdd }) => {
             placeholder="Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded dark:bg-gray-800 dark:text-white"
             required
           />
           <input
@@ -48,7 +50,7 @@ const AddTestimonialModal = ({ onClose, onAdd }) => {
             placeholder="Role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded dark:bg-gray-800 dark:text-white"
             required
           />
           <textarea
@@ -56,7 +58,7 @@ const AddTestimonialModal = ({ onClose, onAdd }) => {
             placeholder="Feedback"
             value={formData.feedback}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded dark:bg-gray-800 dark:text-white"
             required
           ></textarea>
           <input
@@ -67,20 +69,20 @@ const AddTestimonialModal = ({ onClose, onAdd }) => {
             max="5"
             value={formData.rating}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded dark:bg-gray-800 dark:text-white"
             required
           />
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 text-white rounded bg-[var(--color-primary)] hover:opacity-90 transition"
             >
               Submit
             </button>

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from './pages/student/Home';
 import CoursesList from './pages/student/CoursesList';
 import CourseDetails from './pages/student/CourseDetails';
@@ -35,8 +35,9 @@ const App = () => {
       <ToastContainer />
       <Navbar />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
+ <div className="flex-grow pb-16">
+    <Routes>
+     <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/course-list" element={<CoursesList />} />
@@ -76,7 +77,9 @@ const App = () => {
           
         </Route>
 
-      </Routes> 
+        <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
+  </div>
       <Footer />
     </div>
   )

@@ -38,4 +38,18 @@ public class TestimonialService {
         t.setActive(false);
         testimonialDao.save(t);
     }
+    public TestimonialResponseDTO updateTestimonial(Long id, TestimonialRequestDTO dto) {
+        Testimonial testimonial = testimonialDao.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Testimonial not found with id: " + id));
+
+        testimonial.setName(dto.getName());
+        testimonial.setRole(dto.getRole());
+        testimonial.setFeedback(dto.getFeedback());
+        testimonial.setRating(dto.getRating());
+
+        Testimonial updated = testimonialDao.save(testimonial);
+        return mapper.map(updated, TestimonialResponseDTO.class);
+    }
+
+    
 }

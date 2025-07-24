@@ -10,6 +10,8 @@ import com.learnnow.pojo.UserEntity;
 public interface UserEntityDao extends JpaRepository<UserEntity, Long>{
     Optional<UserEntity> findByIdAndIsActiveTrue(Long id);
     List<UserEntity> findByIsActiveTrue();
-    Optional<UserEntity> findByEmailAndIsActiveTrue(String email);
+//    Optional<UserEntity> findByEmailAndIsActiveTrue(String email);
+    Optional<UserEntity> findByEmail(String email);
+
     boolean existsByEmail(String email);
 }

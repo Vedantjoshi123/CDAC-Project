@@ -17,7 +17,7 @@ const CourseCard = ({ course }) => {
       <img className='w-full' src={course.courseThumbnail} alt={course.courseTitle} />
       <div className='p-3 text-left'>
         <h3 className='text-base font-semibold text-[var(--color-text)]'>{course.courseTitle}</h3>
-        <p className='text-[var(--color-text-secondary)]'>Unknown</p>
+        <p className='text-[var(--color-text-secondary)]'>Teacher Name</p>
 
         <div className='flex items-center gap-x-2 mt-1 text-sm'>
   <span className='text-[var(--color-text-secondary)]'>
@@ -42,7 +42,7 @@ const CourseCard = ({ course }) => {
 
 
         <p className='text-base font-semibold mt-2 text-[var(--color-text)]'>
-          {currency}
+          ₹ {currency}
           {(course.coursePrice - (course.discount * course.coursePrice) / 100).toFixed(2)}
         </p>
       </div>
