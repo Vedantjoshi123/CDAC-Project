@@ -26,6 +26,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTestimonial from './pages/admin/AdminTestimonial';
 import AdminTeachersList from './pages/admin/AdminTeachersList';
 import AdminCoursesList from './pages/admin/AdminCoursesList';
+import AllContactUs from './pages/admin/AllContactUs';
+import ContactUs from './pages/common/ContactUs';
 
 const App = () => {
   return (
@@ -40,7 +42,7 @@ const App = () => {
         <Route path="/course-list" element={<CoursesList />} />
         <Route path="/course-list/:input" element={<CoursesList />} />
         <Route path="/course/:id" element={<CourseDetails />} />
-
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/my-enrollments" element={
           <PrivateRoute><MyEnrollments /></PrivateRoute>
         } />
@@ -70,6 +72,8 @@ const App = () => {
           <Route path="teachers" element={<AdminTeachersList />} />
           <Route path="courses" element={<AdminCoursesList />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="allContactUs" element={<AllContactUs />} />
+          
         </Route>
 
       </Routes> 
