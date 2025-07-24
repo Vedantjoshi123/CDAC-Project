@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, Users, MessageCircle, Settings } from 'lucide-react';
+import { Home, BookOpen, Users, MessageCircle, Settings, Contact } from 'lucide-react';
 
 const AdminSidebar = () => {
   const menuItems = [
@@ -8,8 +8,10 @@ const AdminSidebar = () => {
     { name: 'All Courses', path: '/admin/courses', icon: <BookOpen size={24} /> },
     { name: 'All Teachers', path: '/admin/teachers', icon: <Users size={24} /> },
     { name: 'Testimonials', path: '/admin/testimonials', icon: <MessageCircle size={24} /> },
+    { name: 'Contact Us', path: '/admin/allContactUs', icon: <Contact size={24} /> },
     { name: 'Settings', path: '/admin/settings', icon: <Settings size={24} /> },
   ];
+  
 
   return (
     <div
