@@ -25,8 +25,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**","/testimonials/**").permitAll()
-                .anyRequest().authenticated()
+
+                .requestMatchers("/auth/**").permitAll()
+//                .anyRequest().authenticated() For letting my controller to be used and testing without role based access this is commnented, and below permitAll() is added
+                .anyRequest().permitAll()
+//                .anyRequest().authenticated()
+
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

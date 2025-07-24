@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
@@ -16,20 +18,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-public class UserEntity extends BaseEntity{
-	@Column(length = 20, name = "first_name") 
-	private String firstName;
-	@Column(length = 30, name = "last_name")
-	private String lastName;
-	@Column(length = 30, unique = true) 
-	private String email;
-	@Column(length = 300, nullable = false) 
-	private String password;
-	
-	private LocalDate dob;
+public abstract class UserEntity extends BaseEntity {
+
+    @Column(length = 20, name = "first_name") 
+    private String firstName;
+
+    @Column(length = 30, name = "last_name")
+    private String lastName;
+
+    @Column(length = 30, unique = true) 
+    private String email;
+
+    @Column(length = 300, nullable = false) 
+    private String password;
+
+    private LocalDate dob;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 30, name = "user_role", nullable = false)

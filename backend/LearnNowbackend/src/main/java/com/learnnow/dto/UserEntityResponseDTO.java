@@ -3,6 +3,8 @@ package com.learnnow.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.learnnow.pojo.UserRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +19,11 @@ public class UserEntityResponseDTO extends BaseDTO {
 	    private String lastName;
 	    private String email;
 	    private LocalDate dob;
-	    private String userRole;
+	    private UserRole userRole;
+
 	    
 	    
-		public UserEntityResponseDTO(Long id, LocalDateTime createdOn, LocalDateTime updatedOn, String firstName, String lastName, String email, LocalDate dob, String userRole) {
+		public UserEntityResponseDTO(Long id, LocalDateTime createdOn, LocalDateTime updatedOn, String firstName, String lastName, String email, LocalDate dob, UserRole userRole) {
 			super(id, createdOn, updatedOn);
 			this.firstName = firstName;
 			this.lastName = lastName;

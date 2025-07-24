@@ -2,13 +2,17 @@ package com.learnnow.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class ErrorResponseDTO {
-	    private LocalDateTime timestamp;
-	    private int status;
-	    private String error;
-	    private String message;
-	    private String path;
+    private LocalDateTime timestamp;
+    private int status;
+    private String error;
+    private Object message; // Can hold String OR Map<String, String>
+    private String path;
 }
