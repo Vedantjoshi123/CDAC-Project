@@ -20,6 +20,7 @@ function AppContextProvider(props) {
   });
 
   const isTeacher = user?.userRole?.toUpperCase() === "TEACHER";
+  const isStudent = user?.userRole?.toUpperCase() === "STUDENT";
   const isLoggedIn = !!user && !!token;
   const userRole = user?.userRole || null;
 
@@ -39,7 +40,7 @@ function AppContextProvider(props) {
     setUser(userData);
     setToken(jwtToken);
 
-    if (userData.userRole === "STUDENT") navigate("/");
+    if (userData.userRole === "STUDENT") navigate("/student/dashboard");
     else if (userData.userRole === "TEACHER") navigate("/teacher/dashboard");
     else if (userData.userRole === "ADMIN") navigate("/admin/dashboard");
     else navigate("/");
@@ -109,6 +110,7 @@ function AppContextProvider(props) {
     isLoggedIn,
     userRole,
     isTeacher,
+    isStudent,
   };
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;

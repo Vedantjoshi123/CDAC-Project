@@ -40,6 +40,7 @@ function Login() {
 
             const role = response.user.userRole;
             if (role === 'TEACHER') navigate('/teacher');
+            else if (role === 'STUDENT') navigate('/student');
             else if (role === 'ADMIN') navigate('/admin');
             else navigate('/');
       } else {
