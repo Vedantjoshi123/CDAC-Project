@@ -13,7 +13,7 @@ import com.learnnow.pojo.FeedBack;
 public interface FeedBackDao extends JpaRepository<FeedBack, Long>{
 	
 	List<FeedBack> findByCourseIdAndIsActiveTrue(Long courseId);
-	List<FeedBack> findByCourseId(Long courseId);
+	
 //	@Query("SELECT f FROM FeedBack f WHERE f.course.teacher.id = :teacherId AND f.active = true")   // need course table 
 //	List<FeedBack> findActiveFeedbackByTeacherId(@Param("teacherId") Long teacherId);
 
