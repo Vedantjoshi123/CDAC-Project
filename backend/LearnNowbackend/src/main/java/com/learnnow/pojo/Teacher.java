@@ -2,8 +2,8 @@ package com.learnnow.pojo;
 
 import java.util.List;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -19,10 +19,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Teacher extends UserEntity {
+	
 
     @NotBlank(message = "Qualification is required")
     @Size(max = 100)
     private String qualification;
+	
 
     @NotBlank(message = "Specialization is required")
     @Size(max = 100)
