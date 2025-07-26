@@ -28,6 +28,7 @@ import AdminTeachersList from './pages/admin/AdminTeachersList';
 import AdminCoursesList from './pages/admin/AdminCoursesList';
 import AllContactUs from './pages/admin/AllContactUs';
 import ContactUs from './pages/common/ContactUs';
+import AboutUsSection from './pages/common/AboutUs';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
  <div className="flex-grow pb-16">
     <Routes>
      <Route path="/" element={<Home />} />
+        <Route path="/about" element={<AboutUsSection />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/course-list" element={<CoursesList />} />
