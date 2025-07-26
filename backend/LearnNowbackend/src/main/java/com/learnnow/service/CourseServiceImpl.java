@@ -5,21 +5,20 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.learnnow.dto.CourseRequestDTO;
-import com.learnnow.dto.CourseResponseDTO;
-import com.learnnow.dto.TeacherResponseDTO;
-import com.learnnow.exception.ApiException;
-import com.learnnow.exception.ResourceNotFoundException;
-import com.learnnow.pojo.Course;
-import com.learnnow.pojo.Teacher;
 import com.learnnow.dao.CourseDao;
 import com.learnnow.dao.TeacherDao;
+import com.learnnow.dao.CategoryDao;
+import com.learnnow.dto.CourseRequestDTO;
+import com.learnnow.dto.CourseResponseDTO;
+import com.learnnow.pojo.Course;
+import com.learnnow.pojo.Teacher;
+import com.learnnow.pojo.Category;
 import com.learnnow.service.CourseService;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
-@Transactional
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
@@ -27,93 +26,75 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private TeacherDao teacherDao;
-    private CourseResponseDTO mapToCourseResponseDTO(Course course) {
-    	 
-        CourseResponseDTO dto = new CourseResponseDTO();
-        dto.setId(course.getId());
-        dto.setTitle(course.getTitle());
-        dto.setDescription(course.getDescription());
-        // BaseDTO fields
-        dto.setId(course.getId());
-        dto.setCreatedOn(course.getCreatedOn());
-        dto.setUpdatedOn(course.getUpdatedOn());
-        dto.setActive(course.isActive()); // if Course has an `active` field
 
-        Teacher teacher = course.getTeacher();
-        TeacherResponseDTO teacherDTO = new TeacherResponseDTO();
-        teacherDTO.setId(teacher.getId());
-        teacherDTO.setFirstName(teacher.getFirstName());
-        teacherDTO.setLastName(teacher.getLastName());
-        teacherDTO.setEmail(teacher.getEmail());
-        teacherDTO.setDob(teacher.getDob().toString());
-        teacherDTO.setQualification(teacher.getQualification());
-        teacherDTO.setSpecialization(teacher.getSpecialization());
-        teacherDTO.setUserRole(teacher.getUserRole());
-        teacherDTO.setActive(teacher.isActive());
-        teacherDTO.setCreatedOn(teacher.getCreatedOn());
-        teacherDTO.setUpdatedOn(teacher.getUpdatedOn());
+    @Autowired
+    private CategoryDao categoryDao;
 
-        dto.setTeacher(teacherDTO);
-        return dto;
+    @Override
+    public CourseResponseDTO createCourse(CourseRequestDTO dto) {
+        Course course = new Course();
+        mapDTOToEntity(dto, course);
+        return mapEntityToDTO(courseDao.save(course));
     }
 
     @Override
-    public CourseResponseDTO createCourse(CourseRequestDTO courseRequestDTO) {
-        Teacher teacher = teacherDao.findById(courseRequestDTO.getTeacherId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Teacher not found with ID: " + courseRequestDTO.getTeacherId()));
+    public CourseResponseDTO updateCourse(Long id, CourseRequestDTO dto) {
+        Course course = courseDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        mapDTOToEntity(dto, course);
+        return mapEntityToDTO(courseDao.save(course));
+    }
 
-        Course course = new Course();
-        course.setTitle(courseRequestDTO.getTitle());
-        course.setDescription(courseRequestDTO.getDescription());
-        course.setTeacher(teacher);
-
-        Course savedCourse = courseDao.save(course);
-        return mapToCourseResponseDTO(savedCourse);
+    @Override
+    public List<CourseResponseDTO> getAllCourses() {
+        return courseDao.findAll().stream()
+                .map(this::mapEntityToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public CourseResponseDTO getCourseById(Long id) {
         Course course = courseDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found with ID: " + id));
-        return mapToCourseResponseDTO(course);
-    }
-
-    @Override
-    public List<CourseResponseDTO> getAllCourses() {
-        List<Course> courses = courseDao.findAll();
-        if (courses.isEmpty()) {
-            throw new ApiException("No courses available.");
-        }
-        return courses.stream()
-                .map(this::mapToCourseResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public CourseResponseDTO updateCourse(Long id, CourseRequestDTO courseRequestDTO) {
-        Course course = courseDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found with ID: " + id));
-
-        Teacher teacher = teacherDao.findById(courseRequestDTO.getTeacherId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Teacher not found with ID: " + courseRequestDTO.getTeacherId()));
-
-        course.setTitle(courseRequestDTO.getTitle());
-        course.setDescription(courseRequestDTO.getDescription());
-        course.setTeacher(teacher);
-
-        Course updatedCourse = courseDao.save(course);
-        return mapToCourseResponseDTO(updatedCourse);
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        return mapEntityToDTO(course);
     }
 
     @Override
     public void deleteCourse(Long id) {
-        if (!courseDao.existsById(id)) {
-            throw new ResourceNotFoundException("Course not found with ID: " + id);
-        }
         courseDao.deleteById(id);
     }
 
- 
+    private void mapDTOToEntity(CourseRequestDTO dto, Course course) {
+        course.setTitle(dto.getTitle());
+        course.setDescription(dto.getDescription());
+        course.setPrice(dto.getPrice());
+        course.setDiscount(dto.getDiscount());
+        course.setThumbnail(dto.getThumbnail());
+        course.setResource(dto.getResource());
+        course.setOverview(dto.getOverview());
+
+        Teacher teacher = teacherDao.findById(dto.getTeacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        course.setTeacher(teacher);
+
+        Category category = categoryDao.findById(dto.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        course.setCategory(category);
+    }
+
+    private CourseResponseDTO mapEntityToDTO(Course course) {
+        CourseResponseDTO dto = new CourseResponseDTO();
+        dto.setId(course.getId());
+        dto.setTitle(course.getTitle());
+        dto.setDescription(course.getDescription());
+        dto.setPrice(course.getPrice());
+        dto.setDiscount(course.getDiscount());
+        dto.setThumbnail(course.getThumbnail());
+        dto.setResource(course.getResource());
+        dto.setOverview(course.getOverview());
+        dto.setActive(course.isActive());
+        dto.setTeacherId(course.getTeacher().getId());
+        dto.setCategoryId(course.getCategory().getId());
+        return dto;
+    }
 }

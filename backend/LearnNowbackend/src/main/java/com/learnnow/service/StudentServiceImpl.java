@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learnnow.dao.StudentDao;
-import com.learnnow.dto.StudentRequestDTO;
 import com.learnnow.dto.StudentResponseDTO;
-import com.learnnow.exception.ApiException;
+import com.learnnow.dto.StudentUpdateDTO;
 import com.learnnow.exception.ResourceNotFoundException;
 import com.learnnow.pojo.Student;
-import com.learnnow.pojo.UserRole;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -20,15 +18,14 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentDao studentRepo;
 
+    // Converts Student entity to response DTO
     private StudentResponseDTO mapToResponseDTO(Student student) {
         StudentResponseDTO dto = new StudentResponseDTO();
 
-        // Base fields from BaseDTO
         dto.setId(student.getId());
         dto.setCreatedOn(student.getCreatedOn());
         dto.setUpdatedOn(student.getUpdatedOn());
 
-        // Student-specific fields
         dto.setFirstName(student.getFirstName());
         dto.setLastName(student.getLastName());
         dto.setEmail(student.getEmail());
@@ -39,38 +36,26 @@ public class StudentServiceImpl implements StudentService {
         return dto;
     }
 
-
-    private Student mapToEntity(StudentRequestDTO dto) {
-        Student student = new Student();
-        student.setFirstName(dto.getFirstName());
-        student.setLastName(dto.getLastName());
-        student.setEmail(dto.getEmail());
-        student.setPassword(dto.getPassword());
-        student.setDob(dto.getDob());
-        student.setGradeLevel(dto.getGradeLevel());
-        student.setUserRole(UserRole.STUDENT); // 👈 SET ROLE HERE
-        return student;
-    }
-
+    // Update student by ID
     @Override
-    public StudentResponseDTO createStudent(StudentRequestDTO studentDto) {
-        if (studentRepo.existsByEmail(studentDto.getEmail())) {
-            throw new ApiException("Student with email already exists: " + studentDto.getEmail());
-        }
-        Student student = mapToEntity(studentDto);
-        Student saved = studentRepo.save(student);
-        return mapToResponseDTO(saved);
-    }
-
-    @Override
-    public StudentResponseDTO updateStudent(Long id, StudentRequestDTO studentDto) {
+    public StudentResponseDTO updateStudent(Long id, StudentUpdateDTO studentDto) {
         Student existing = studentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
 
-        existing.setFirstName(studentDto.getFirstName());
-        existing.setLastName(studentDto.getLastName());
-        existing.setDob(studentDto.getDob());
-        existing.setGradeLevel(studentDto.getGradeLevel());
+        if (studentDto.getFirstName() != null)
+            existing.setFirstName(studentDto.getFirstName());
+
+        if (studentDto.getLastName() != null)
+            existing.setLastName(studentDto.getLastName());
+
+        if (studentDto.getDob() != null)
+            existing.setDob(studentDto.getDob());
+
+        if (studentDto.getGradeLevel() != null)
+            existing.setGradeLevel(studentDto.getGradeLevel());
+
+        if (studentDto.getImage() != null)
+            existing.setImage(studentDto.getImage());
 
         Student updated = studentRepo.save(existing);
         return mapToResponseDTO(updated);
