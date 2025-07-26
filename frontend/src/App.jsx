@@ -30,6 +30,7 @@ import AdminTeachersList from './pages/admin/AdminTeachersList';
 import AdminCoursesList from './pages/admin/AdminCoursesList';
 import AllContactUs from './pages/admin/AllContactUs';
 import ContactUs from './pages/common/ContactUs';
+import AboutUsSection from './pages/common/AboutUs';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentCourses from './pages/student/StudentCourses';
 import StudentProfile from './pages/student/StudentProfile';
@@ -42,9 +43,11 @@ const App = () => {
       <ToastContainer />
       <Navbar />
 
+
       <div className="flex-grow pb-16">
         <Routes>
           <Route path="/" element={<Home />} />
+             <Route path="/about" element={<AboutUsSection />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/course-list" element={<CoursesList />} />
@@ -69,6 +72,7 @@ const App = () => {
             <Route path="settings" element={<Settings />} />
             <Route path="student-enrolled" element={<StudentsEnrolled />} />
           </Route>
+
 
           <Route path="/student" element={
             <RoleBasedRoute allowedRoles={['STUDENT']}>
