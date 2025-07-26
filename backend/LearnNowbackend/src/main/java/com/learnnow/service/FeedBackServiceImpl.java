@@ -52,7 +52,7 @@ public class FeedBackServiceImpl implements FeedBackService {
     }
 
     @Override
-    public FeedBackResponseDTO getFeedBackId(Long id) {
+    public FeedBackResponseDTO getFeedBackUserId(Long id) {
         FeedBack feedback = feedBackDao.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feedback not found with id: " + id));
         return mapper.map(feedback, FeedBackResponseDTO.class);
@@ -65,6 +65,22 @@ public class FeedBackServiceImpl implements FeedBackService {
         feedback.setActive(false);
         feedBackDao.save(feedback);
     }
+
+	@Override
+	public List<FeedBackResponseDTO> getFeedBackByCourseId(Long courseId) {
+		 List<FeedBack> feedbackList = feedBackDao.findByCourseId(courseId);
+
+		    List<FeedBackResponseDTO> dtoList = feedbackList.stream()
+		        .map(fb -> mapper.map(fb, FeedBackResponseDTO.class)) 
+		        .collect(Collectors.toList());
+
+		return dtoList;
+	}
+
+	
+
+	
+	
     
     
     // need course table here

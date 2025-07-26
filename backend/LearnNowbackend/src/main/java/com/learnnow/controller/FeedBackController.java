@@ -23,15 +23,15 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/feedbacks")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 public class FeedBackController {
 	@Autowired 
 	private FeedBackService feedBackService;
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getFeedBackById(@PathVariable Long id)
+	public ResponseEntity<?> getFeedBackByUserId(@PathVariable Long id)
 	{
-		return ResponseEntity.ok(feedBackService.getFeedBackId(id));
+		return ResponseEntity.ok(feedBackService.getFeedBackUserId(id));
 	}
 	
 	 @GetMapping
@@ -55,6 +55,12 @@ public class FeedBackController {
 	 public ResponseEntity<FeedBackResponseDTO> addFeedBack(@Valid @RequestBody FeedBackRequestDTO dto) {
 	     return ResponseEntity.ok(feedBackService.addFeedBack(dto));
 	 }
+	 @GetMapping("/course/{courseId}")
+	    public ResponseEntity<List<FeedBackResponseDTO>> getFeedbackByCourseId(@PathVariable Long courseId) {
+	        List<FeedBackResponseDTO> feedbackList = feedBackService.getFeedBackByCourseId(courseId);
+	        return ResponseEntity.ok(feedbackList);
+	    }
+	 
 	 
 //	 @GetMapping("/teacher/{teacherId}")     //need course table
 //	 public ResponseEntity<List<FeedBackResponseDTO>> getFeedbacksForTeacher(@PathVariable Long teacherId) {
