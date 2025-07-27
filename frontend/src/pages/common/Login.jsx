@@ -31,7 +31,7 @@ function Login() {
 
   // 🔐 Hardcoded admin credentials
   const hardcodedAdmin = {
-    email: "admin",
+    email: "admin@gmail.com",
     password: "admin",
   };
 
