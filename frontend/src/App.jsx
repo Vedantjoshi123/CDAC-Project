@@ -15,7 +15,7 @@ import MyCourses from './pages/teacher/MyCourses';
 import StudentsEnrolled from './pages/teacher/StudentsEnrolled';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
-import "quill/dist/quill.snow.css"
+import "quill/dist/quill.snow.css";
 import { ToastContainer } from 'react-toastify';
 import Login from './pages/common/Login';
 import Admin from './pages/admin/Admin';
@@ -47,32 +47,34 @@ const App = () => {
       <div className="flex-grow pb-16">
         <Routes>
           <Route path="/" element={<Home />} />
-             <Route path="/about" element={<AboutUsSection />} />
+          <Route path="/about" element={<AboutUsSection />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/course-list" element={<CoursesList />} />
           <Route path="/course-list/:input" element={<CoursesList />} />
           <Route path="/course/:id" element={<CourseDetails />} />
           <Route path="/contact" element={<ContactUs />} />
+
           <Route path="/my-enrollments" element={
             <PrivateRoute><MyEnrollments /></PrivateRoute>
           } />
           <Route path="/player/:courseId" element={
             <PrivateRoute><Player /></PrivateRoute>
           } />
+
           <Route path="/loading/:path" element={<Loading />} />
 
           <Route path="/teacher" element={
             <RoleBasedRoute allowedRoles={['TEACHER']}><Teacher /></RoleBasedRoute>
           }>
             <Route index element={<TDashboard />} />
+
             <Route path="add-course" element={<AddCourse />} />
             <Route path="my-courses" element={<MyCourses />} />
             <Route path="feedbacks" element={<Feedbacks />} />
             <Route path="settings" element={<Settings />} />
             <Route path="student-enrolled" element={<StudentsEnrolled />} />
           </Route>
-
 
           <Route path="/student" element={
             <RoleBasedRoute allowedRoles={['STUDENT']}>
@@ -103,9 +105,10 @@ const App = () => {
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </div>
+
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default App;

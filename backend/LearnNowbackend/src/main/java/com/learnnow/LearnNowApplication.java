@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-
 @SpringBootApplication(scanBasePackages = "com.learnnow")
 @EnableJpaAuditing
 @EntityScan(basePackages = "com.learnnow.pojo") 
@@ -50,5 +49,7 @@ public class LearnNowApplication {
 	{
 		return new BCryptPasswordEncoder();
 	}
+	
+	
 
 }

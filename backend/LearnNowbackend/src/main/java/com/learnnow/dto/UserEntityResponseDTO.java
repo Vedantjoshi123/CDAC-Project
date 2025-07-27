@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import com.learnnow.pojo.UserRole;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserEntityResponseDTO extends BaseDTO {
 	    private String firstName;
 	    private String lastName;
@@ -31,11 +29,6 @@ public class UserEntityResponseDTO extends BaseDTO {
 			this.dob = dob;
 			this.userRole = userRole;
 		}
-		
-		
-	    
-	    
-	    
 	    
 	  
 }

@@ -19,38 +19,61 @@ function Login() {
   };
 
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+ const handleLogin = async (e) => {
+  e.preventDefault();
 
-    const { email, password } = formData;
+  const { email, password } = formData;
 
-    if (!email || !password) {
-      toast.error("Please enter email and password");
-      return;
-    }
+  if (!email || !password) {
+    toast.error("Please enter email and password");
+    return;
+  }
 
-    try {
-      const response = await loginUser(email, password); // Your API call here
-
-      if (response.status === 'success') {
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
-            toast.success("Login successful");
-            console.log(response);
-
-            const role = response.user.userRole;
-            if (role === 'TEACHER') navigate('/teacher');
-            else if (role === 'STUDENT') navigate('/student');
-            else if (role === 'ADMIN') navigate('/admin');
-            else navigate('/');
-      } else {
-        toast.error("Invalid credentials");
-      }
-    } catch (err) {
-      toast.error("Something went wrong");
-      console.error(err);
-    }
+  // 🔐 Hardcoded admin credentials
+  const hardcodedAdmin = {
+    email: "admin",
+    password: "admin",
   };
+
+  // ✅ Check hardcoded admin credentials
+  if (email === hardcodedAdmin.email && password === hardcodedAdmin.password) {
+    const fakeAdminUser = {
+      userRole: "ADMIN",
+      name: "Super Admin",
+      email: hardcodedAdmin.email,
+    };
+
+    // Simulate setting token and user data
+    localStorage.setItem("token", "hardcoded-admin-token");
+    localStorage.setItem("user", JSON.stringify(fakeAdminUser));
+
+    toast.success("Logged in as Admin");
+    navigate("/admin");
+    return;
+  }
+
+  // ✅ If not hardcoded, proceed with regular login
+  try {
+    const response = await loginUser(email, password);
+
+    if (response.status === "success") {
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      toast.success("Login successful");
+
+      const role = response.user.userRole;
+      if (role === "TEACHER") navigate("/teacher");
+      else if (role === "ADMIN") navigate("/admin");
+      else navigate("/");
+    } else {
+      toast.error(response.message || "Invalid credentials");
+    }
+  } catch (err) {
+    toast.error("Something went wrong");
+    console.error(err);
+  }
+};
+
 
   return (
    <div className="min-h-screen flex items-center justify-center ">

@@ -1,9 +1,8 @@
 package com.learnnow.service;
 
-import java.time.LocalDate;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,48 +53,55 @@ public class AuthService {
         return response;
     }
     
-    public UserEntityResponseDTO register(RegisterRequestDTO requestDto) {
-        UserEntity entity;
-
-        switch (requestDto.getUserRole()) {
-            case "TEACHER":
-                Teacher teacher = new Teacher();
-                teacher.setFirstName(requestDto.getFirstName());
-                teacher.setLastName(requestDto.getLastName());
-                teacher.setEmail(requestDto.getEmail());
-                teacher.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-                teacher.setDob(requestDto.getDob()); // ✅ no need to parse
-                teacher.setUserRole(UserRole.TEACHER);
-                teacher.setActive(true);
-                teacher.setQualification("Not Provided");
-                teacher.setSpecialization("Not Provided");
-                entity = teacher;
-                break;
-
-            case "STUDENT":
-                Student student = new Student();
-                student.setFirstName(requestDto.getFirstName());
-                student.setLastName(requestDto.getLastName());
-                student.setEmail(requestDto.getEmail());
-                student.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-                student.setDob(requestDto.getDob()); // ✅ no need to parse
-                student.setUserRole(UserRole.STUDENT);
-                student.setActive(true);
-                student.setGradeLevel("Not Provided");
-                entity = student;
-                break;
-
-            default:
-                throw new IllegalArgumentException("Invalid user role: " + requestDto.getUserRole());
+    
+    public ResponseEntity<?> register(RegisterRequestDTO dto) {
+        if (userEntityDao.findByEmail(dto.getEmail()).isPresent()) {
+            throw new ApiException("Email is already registered");
         }
 
-        entity = userEntityDao.save(entity);
+        UserEntity user;
+        UserRole role = UserRole.valueOf(dto.getUserRole().toUpperCase());
 
-        return mapper.map(entity, UserEntityResponseDTO.class);
+        switch (role) {
+        case STUDENT:
+            user = new Student();
+            break;
+        case TEACHER:
+            user = new Teacher();
+            break;
+        case ADMIN:
+            user = new Admin();
+            break;
+        default:
+            throw new ApiException("Invalid role: " + dto.getUserRole());
     }
 
+        // Set common fields
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setDob(dto.getDob());
+        user.setUserRole(role);
+        user.setActive(true);
 
+        userEntityDao.save(user);
 
+        // Generate JWT token
+        String token = jwtUtils.generateToken(user);
+
+        // Prepare response DTO
+        UserEntityResponseDTO userDto = mapper.map(user, UserEntityResponseDTO.class);
+
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setToken(token);
+        response.setUser(userDto);
+        response.setMessage("success");
+
+        return ResponseEntity.ok(response);
+    }
+
+    
 }
 
 

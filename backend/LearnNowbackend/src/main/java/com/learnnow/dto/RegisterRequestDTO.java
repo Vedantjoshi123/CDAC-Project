@@ -12,23 +12,23 @@ import lombok.Setter;
 @Setter
 public class RegisterRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "First name is required")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @Email
+    @Email(message = "Email must be valid")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password is required")
     private String password;
 
-    @NotNull
+    @NotNull(message = "Date of birth is required")
     private LocalDate dob;
 
-    @NotBlank
-    private String userRole; // Will be parsed to enum
+    @NotBlank(message = "User role is required")
+    private String userRole;
 
-    // Address fields can be nested in AddressDto if needed
+    // ❌ Do not include qualification/specialization here
 }

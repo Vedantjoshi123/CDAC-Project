@@ -54,8 +54,8 @@ public class StudentServiceImpl implements StudentService {
         if (studentDto.getGradeLevel() != null)
             existing.setGradeLevel(studentDto.getGradeLevel());
 
-        if (studentDto.getImage() != null)
-            existing.setImage(studentDto.getImage());
+        // if (studentDto.getImage() != null)
+        //     existing.setImage(studentDto.getImage());
 
         Student updated = studentRepo.save(existing);
         return mapToResponseDTO(updated);

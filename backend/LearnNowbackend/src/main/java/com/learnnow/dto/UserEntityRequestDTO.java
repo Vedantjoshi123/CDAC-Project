@@ -10,10 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserEntityRequestDTO extends BaseDTO {
-    public UserEntityRequestDTO(Long id, LocalDateTime createdOn, LocalDateTime updatedOn) {
-		super(id, createdOn, updatedOn);
-	}
+public class UserEntityRequestDTO {
 	private String firstName;
     private String lastName;
     private String email;

@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import { insertData } from '../../services/userServices';
- 
+import { AppContext } from '../../context/AppContext';
+
+
 function Register() {
+    const { login } = useContext(AppContext); 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
@@ -39,13 +42,28 @@ function Register() {
             toast.error("Passwords do not match");
         } else {
             const response = await insertData(firstName, lastName, email, password, dob, userRole);
-            if (response.status === "success") {
+             if (response.message === "success") {
                 toast.success("Registration done successfully!");
-                console.log(response);
-                navigate("/login");
-            } else {
-                toast.error("Unable to register");
-            }
+
+                const registeredUser = response.user;
+                const jwtToken = response.token;
+
+                if (registeredUser && jwtToken) {
+                  login(registeredUser, jwtToken); // ✅ global login
+                  // Navigate by role
+                  const role = registeredUser.userRole || registeredUser.role;
+                  if (role === "STUDENT") navigate("/student");
+                  else if (role === "TEACHER") navigate("/teacher");
+                  else if (role === "ADMIN") navigate("/admin");
+                  else navigate("/login"); // fallback
+                } else {
+                  toast.error("Missing user data or token from server");
+                }
+
+              } else {
+                toast.error(response.message || "Registration failed");
+              }
+
         }
     };
 
