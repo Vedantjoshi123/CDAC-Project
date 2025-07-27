@@ -12,8 +12,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class FeedBackResponseDTO extends BaseDTO {
-    private Long userId;
+    private Long studentId;
     private Long courseId;
     private String comment;
-    private Integer rating;
+    private int rating;
 }
