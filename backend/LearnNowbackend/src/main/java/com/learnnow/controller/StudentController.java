@@ -1,6 +1,6 @@
 package com.learnnow.controller;
 
-import com.learnnow.dto.StudentRequestDTO;
+import com.learnnow.dto.StudentUpdateDTO;
 import com.learnnow.dto.StudentResponseDTO;
 import com.learnnow.service.StudentService;
 
@@ -19,11 +19,11 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    @PostMapping
-    public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO studentDto) {
-        StudentResponseDTO created = studentService.createStudent(studentDto);
-        return ResponseEntity.ok(created);
-    }
+//    @PostMapping
+//    public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO studentDto) {
+//        StudentResponseDTO created = studentService.createStudent(studentDto);
+//        return ResponseEntity.ok(created);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
@@ -39,7 +39,7 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable Long id,
-            @Valid @RequestBody StudentRequestDTO studentDto) {
+            @Valid @RequestBody StudentUpdateDTO studentDto) {
         StudentResponseDTO updated = studentService.updateStudent(id, studentDto);
         return ResponseEntity.ok(updated);
     }

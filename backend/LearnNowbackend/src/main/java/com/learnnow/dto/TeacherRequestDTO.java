@@ -15,7 +15,6 @@ public class TeacherRequestDTO {
     private String specialization;
     private String experience;
     private String about;
-
     private AddressRequestDTO address;
 }
 

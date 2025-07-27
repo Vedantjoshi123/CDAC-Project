@@ -2,8 +2,10 @@ package com.learnnow.pojo;
 
 import java.util.List;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
@@ -21,9 +23,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @DiscriminatorValue("TEACHER")
 public class Teacher extends UserEntity {
+	
 
     @Size(max = 100)
     private String qualification;
+	
 
     @Size(max = 100)
     private String specialization;

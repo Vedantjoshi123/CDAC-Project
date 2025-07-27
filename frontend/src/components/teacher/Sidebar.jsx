@@ -11,7 +11,7 @@ const Sidebar = () => {
   { name: 'Dashboard', path: '/teacher', icon: <Home size={24} /> },
   { name: 'Add Course', path: '/teacher/add-course', icon: <PlusCircle size={24} /> },
   { name: 'My Courses', path: '/teacher/my-courses', icon: <BookOpen size={24} /> },
-  { name: 'Studens Enrolled', path: '/teacher/student-enrolled', icon: <Users size={24} /> },    
+  { name: 'Students Enrolled', path: '/teacher/student-enrolled', icon: <Users size={24} /> },    
   { name: 'Feedbacks', path: '/teacher/feedbacks', icon: <Users size={24} /> },
   { name: 'Settings', path: '/teacher/settings', icon: <Settings size={24} /> },
 ];

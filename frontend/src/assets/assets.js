@@ -101,7 +101,7 @@ export const dummyDashboardData = {
         {
             "courseTitle": "Introduction to JavaScript",
             "student": {
-                "_id": "user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V",
+                "_id": "1",
                 "name": "Sunbeam Institute",
                 "imageUrl": "https://img.youtube.com/vi/EtrK775eDMs/sddefault.jpg"
             }
@@ -183,7 +183,7 @@ export const dummyStudentEnrolled = [
 
 export const dummyCourses = [
     {
-        "_id": "605c72efb3f1c2b1f8e4e1a1",
+        "_id": "1",
         "courseTitle": "Introduction to JavaScript",
         "courseDescription": "<h2>Learn the Basics of JavaScript</h2><p>JavaScript is a versatile programming language that powers the web. In this course, you will learn the fundamentals of JavaScript, including syntax, data types, and control structures.</p><p>This course is perfect for beginners who want to start their journey in web development. By the end of this course, you will be able to create interactive web pages and understand the core concepts of JavaScript.</p><ul><li>Understand the basics of programming</li><li>Learn how to manipulate the DOM</li><li>Create dynamic web applications</li></ul>",
         "coursePrice": 49.99,
@@ -199,7 +199,7 @@ export const dummyCourses = [
                         "lectureId": "lecture1",
                         "lectureTitle": "What is JavaScript?",
                         "lectureDuration": 16,
-                        "lectureUrl": "x2VI6gaOfKM",
+                        "lectureUrl": "https://youtu.be/jYjNigSmPE8?si=wUI_0IeVa6MoIe2W",
                         "isPreviewFree": true,
                         "lectureOrder": 1
                     },
@@ -207,7 +207,7 @@ export const dummyCourses = [
                         "lectureId": "lecture2",
                         "lectureTitle": "Setting Up Your Environment",
                         "lectureDuration": 19,
-                        "lectureUrl": "x2VI6gaOfKM",
+                        "lectureUrl": "hx2VI6gaOfKM",
                         "isPreviewFree": false,
                         "lectureOrder": 2
                     }

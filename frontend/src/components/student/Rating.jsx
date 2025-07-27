@@ -1,30 +1,48 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react';
 
-const Rating = ({initialRating, onRate}) => {
+const Rating = ({ initialRating = 0, onChange = () => {}, readonly = false }) => {
+  const [rating, setRating] = useState(initialRating);
+  const [hoverRating, setHoverRating] = useState(0);
 
-  const [rating, setRating] = useState(initialRating || 0)
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
 
-  const handleRating = (value) => {
-    setRating(value);
-    if(onRate) onRate(value)
-  }
-
-  useEffect(()=>{
-    if(initialRating){
-      setRating(initialRating)
+  const handleClick = (value) => {
+    if (!readonly) {
+      setRating(value);
+      onChange(value); // ✅ IMPORTANT: Notifies Player.jsx
     }
-  },[initialRating])
+  };
+
+  const handleMouseEnter = (value) => {
+    if (!readonly) setHoverRating(value);
+  };
+
+  const handleMouseLeave = () => {
+    if (!readonly) setHoverRating(0);
+  };
 
   return (
-    <div>
-      {Array.from({length:5},(_,index)=>{
-        const starValue = index + 1;
-        return (
-          <span key={index} className={`text-xl sm:text-2xl cursor-pointer transition-colors ${starValue <= rating ? "text-yellow-500" :"text-gray-400"}`} onClick={()=> handleRating(starValue)}>&#9733;</span>
-        )
-      })}
+    <div className="flex">
+      {[1, 2, 3, 4, 5].map((value) => (
+        <span
+          key={value}
+          onClick={() => handleClick(value)}
+          onMouseEnter={() => handleMouseEnter(value)}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            cursor: readonly ? 'default' : 'pointer',
+            color: value <= (hoverRating || rating) ? 'gold' : 'gray',
+            fontSize: '1.5rem',
+            userSelect: 'none',
+          }}
+        >
+          ★
+        </span>
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default Rating
+export default Rating;
