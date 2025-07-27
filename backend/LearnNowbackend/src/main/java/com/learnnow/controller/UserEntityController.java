@@ -34,4 +34,5 @@ public class UserEntityController {
 	     return ResponseEntity.ok(userEntityService.getAllActiveUsers());
 	 }
 
+	
 }

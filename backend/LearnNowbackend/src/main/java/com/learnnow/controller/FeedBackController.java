@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learnnow.dto.FeedBackRequestDTO;
 import com.learnnow.dto.FeedBackResponseDTO;
+import com.learnnow.exception.TeacherCantSendFeedbackException;
+import com.learnnow.pojo.UserRole;
 import com.learnnow.service.FeedBackService;
+import com.learnnow.service.UserEntityService;
 
 import jakarta.validation.Valid;
 
@@ -27,6 +30,10 @@ import jakarta.validation.Valid;
 public class FeedBackController {
 	@Autowired 
 	private FeedBackService feedBackService;
+	
+//	@Autowired
+//	private UserEntityService userEntityService;
+	
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getFeedBackById(@PathVariable Long id)
@@ -51,15 +58,34 @@ public class FeedBackController {
 	        return ResponseEntity.ok("Feedback deleted successfully");
 	    }
 	 
+//	 @PostMapping
+//	 public ResponseEntity<FeedBackResponseDTO> addFeedBack(@Valid @RequestBody FeedBackRequestDTO dto) {
+//		 if(userEntityService.getUserRoleById(dto.getUserId()).equals("TEACHER")) {
+//			 return ResponseEntity.ok(feedBackService.addFeedBack(dto));
+//		 }
+//		 else {
+//			 throw new TeacherCantSendFeedbackException("Teacher Can't send the Feedback");
+//		 }
+//	     
+//	 }
 	 @PostMapping
 	 public ResponseEntity<FeedBackResponseDTO> addFeedBack(@Valid @RequestBody FeedBackRequestDTO dto) {
-	     return ResponseEntity.ok(feedBackService.addFeedBack(dto));
+			return ResponseEntity.ok(feedBackService.addFeedBack(dto));
 	 }
 	 
-//	 @GetMapping("/teacher/{teacherId}")     //need course table
-//	 public ResponseEntity<List<FeedBackResponseDTO>> getFeedbacksForTeacher(@PathVariable Long teacherId) {
-//	     return ResponseEntity.ok(feedBackService.getFeedbacksForTeacher(teacherId));
-//	 }
+   @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<FeedBackResponseDTO>> getFeedbackByCourse(@PathVariable Long courseId) {
+        List<FeedBackResponseDTO> list = feedBackService.getFeedbackByCourseId(courseId);
+        return ResponseEntity.ok(list);
+    }
+
+
+   @GetMapping("/teacher/{teacherId}")
+   public ResponseEntity<List<FeedBackResponseDTO>> getFeedbacksByTeacherId(@PathVariable Long teacherId) {
+       List<FeedBackResponseDTO> feedbacks = feedBackService.getFeedbackByTeacherId(teacherId);
+       return ResponseEntity.ok(feedbacks);
+   }
+
 
 
 

@@ -13,6 +13,7 @@ import com.learnnow.dao.UserEntityDao;
 import com.learnnow.dto.UserEntityResponseDTO;
 import com.learnnow.exception.ResourceNotFoundException;
 import com.learnnow.pojo.UserEntity;
+import com.learnnow.pojo.UserRole;
 
 import lombok.AllArgsConstructor;
 
@@ -46,5 +47,9 @@ public class UserEntityService {
 	                .orElseThrow(() -> new ResourceNotFoundException("User with ID " + id + " not found"));
 	        user.setActive(false);
 	        userEntityDao.save(user);
+	    }
+	    
+	    public UserRole getUserRoleById(Long id) {
+	    	return userEntityDao.getUserRoleById(id);
 	    }
 }
