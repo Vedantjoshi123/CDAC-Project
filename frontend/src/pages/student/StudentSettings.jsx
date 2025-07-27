@@ -1,9 +1,10 @@
 import React from 'react'
+import UpdateProfile from './UpdateStudent'
 
 function StudentSettings() {
   return (
     <div>
-      StudentSettings
+      <UpdateProfile/>
     </div>
   )
 }
