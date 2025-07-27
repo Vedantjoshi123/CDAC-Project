@@ -44,12 +44,10 @@ public class CourseServiceImpl implements CourseService {
         teacherDTO.setId(teacher.getId());
         teacherDTO.setFirstName(teacher.getFirstName());
         teacherDTO.setLastName(teacher.getLastName());
-        teacherDTO.setEmail(teacher.getEmail());
-        teacherDTO.setDob(teacher.getDob().toString());
+        teacherDTO.setDob(teacher.getDob());
         teacherDTO.setQualification(teacher.getQualification());
         teacherDTO.setSpecialization(teacher.getSpecialization());
         teacherDTO.setUserRole(teacher.getUserRole());
-        teacherDTO.setActive(teacher.isActive());
         teacherDTO.setCreatedOn(teacher.getCreatedOn());
         teacherDTO.setUpdatedOn(teacher.getUpdatedOn());
 

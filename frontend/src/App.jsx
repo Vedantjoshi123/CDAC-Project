@@ -13,7 +13,7 @@ import MyCourses from './pages/teacher/MyCourses';
 import StudentsEnrolled from './pages/teacher/StudentsEnrolled';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
-import "quill/dist/quill.snow.css"
+import "quill/dist/quill.snow.css";
 import { ToastContainer } from 'react-toastify';
 import Login from './pages/common/Login';
 import Admin from './pages/admin/Admin';
@@ -35,54 +35,58 @@ const App = () => {
       <ToastContainer />
       <Navbar />
 
- <div className="flex-grow pb-16">
-    <Routes>
-     <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/course-list" element={<CoursesList />} />
-        <Route path="/course-list/:input" element={<CoursesList />} />
-        <Route path="/course/:id" element={<CourseDetails />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/my-enrollments" element={
-          <PrivateRoute><MyEnrollments /></PrivateRoute>
-        } />
-        <Route path="/player/:courseId" element={
-          <PrivateRoute><Player /></PrivateRoute>
-        } />
-        <Route path="/loading/:path" element={<Loading />} />
+      <div className="flex-grow pb-16">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/course-list" element={<CoursesList />} />
+          <Route path="/course-list/:input" element={<CoursesList />} />
+          <Route path="/course/:id" element={<CourseDetails />} />
+          <Route path="/loading/:path" element={<Loading />} />
 
-        <Route path="/teacher" element={
-          <RoleBasedRoute allowedRoles={['TEACHER']}><Teacher /></RoleBasedRoute>
-        }>
-          <Route index element={<Dashboard />} />
-          <Route path="add-course" element={<AddCourse />} />
-          <Route path="my-courses" element={<MyCourses />} />
-          <Route path="feedbacks" element={<Feedbacks />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="student-enrolled" element={<StudentsEnrolled />} />
-        </Route>
+          {/* Protected Routes - Student */}
+          <Route path="/my-enrollments" element={
+            <PrivateRoute><MyEnrollments /></PrivateRoute>
+          } />
+          <Route path="/player/:courseId" element={
+            <PrivateRoute><Player /></PrivateRoute>
+          } />
 
-        <Route path="/admin" element={
-          <RoleBasedRoute allowedRoles={['ADMIN']}><Admin /></RoleBasedRoute>
-        } />
+          {/* Protected Routes - Teacher */}
+          <Route path="/teacher" element={
+            <RoleBasedRoute allowedRoles={['TEACHER']}><Teacher /></RoleBasedRoute>
+          }>
+            <Route index element={<Dashboard />} />
+            <Route path="add-course" element={<AddCourse />} />
+            <Route path="my-courses" element={<MyCourses />} />
+            <Route path="feedbacks" element={<Feedbacks />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="student-enrolled" element={<StudentsEnrolled />} />
+          </Route>
 
-        <Route path="/admin" element={<Admin />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="testimonials" element={<AdminTestimonial />} />
-          <Route path="teachers" element={<AdminTeachersList />} />
-          <Route path="courses" element={<AdminCoursesList />} />
-          <Route path="settings" element={<AdminSettings />} />
-          <Route path="allContactUs" element={<AllContactUs />} />
-          
-        </Route>
+          {/* Protected Routes - Admin (Fixed) */}
+          <Route path="/admin" element={
+            <RoleBasedRoute allowedRoles={['ADMIN']}><Admin /></RoleBasedRoute>
+          }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="testimonials" element={<AdminTestimonial />} />
+            <Route path="teachers" element={<AdminTeachersList />} />
+            <Route path="courses" element={<AdminCoursesList />} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="allContactUs" element={<AllContactUs />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/login" />} />
-    </Routes>
-  </div>
+          {/* Redirect unknown routes */}
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
+
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default App;

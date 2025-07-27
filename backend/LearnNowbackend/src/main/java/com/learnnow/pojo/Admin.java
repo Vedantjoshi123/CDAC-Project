@@ -1,6 +1,7 @@
 package com.learnnow.pojo;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@DiscriminatorValue("ADMIN")
 public class Admin extends UserEntity {
 
     @Column(length = 100)

@@ -7,8 +7,6 @@ import humanizeDuration from "humanize-duration";
 export const AppContext = createContext();
 
 function AppContextProvider(props) {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const currency = import.meta.env.VITE_CURRENCY;
   const navigate = useNavigate();
 
   const [allCourses, setAllCourses] = useState([]);
@@ -92,8 +90,6 @@ function AppContextProvider(props) {
   }, [user]);
 
   const value = {
-    backendUrl,
-    currency,
     navigate,
     allCourses,
     enrolledCourses,
