@@ -1,13 +1,21 @@
-// services/feedbackService.js
-
 import axios from 'axios';
 import { config } from './config';
+
+// Utility to get Authorization headers
+function authHeader() {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
 
 // Get feedback list for a course
 export async function getFeedback(courseId) {
   try {
     const url = `${config.serverUrl}/feedbacks/course/${courseId}`;
-    const response = await axios.get(url);
+    const response = await axios.get(url, authHeader());
     return response.data;
   } catch (error) {
     console.error('Error fetching feedback:', error);
@@ -23,7 +31,7 @@ export async function addFeedback(courseId, feedbackData) {
 
   try {
     const url = `${config.serverUrl}/feedbacks`;
-    const response = await axios.post(url, feedbackData);
+    const response = await axios.post(url, feedbackData, authHeader());
     return response.data;
   } catch (error) {
     console.error('Error adding feedback:', error);
