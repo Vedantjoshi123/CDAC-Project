@@ -92,7 +92,8 @@ public class FeedBackServiceImpl implements FeedBackService {
     public void deleteFeedBack(Long id) {
         FeedBack feedback = feedBackDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Feedback not found with id: " + id));
-        feedBackDao.delete(feedback);
+        feedback.setActive(false);
+        feedBackDao.save(feedback);
     }
 
     // Convert FeedBack -> FeedBackResponseDTO

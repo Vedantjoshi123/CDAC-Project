@@ -28,4 +28,6 @@ public class Address extends BaseEntity {
     @Column(length = 50, nullable = true)
     private String country;
 
+
+
 }

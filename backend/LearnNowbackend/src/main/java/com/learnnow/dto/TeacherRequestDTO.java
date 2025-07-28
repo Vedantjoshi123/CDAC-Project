@@ -15,6 +15,15 @@ public class TeacherRequestDTO {
     private String specialization;
     private String experience;
     private String about;
-    private AddressRequestDTO address;
+    
+    private String street;
+    private String city;
+    private String state;
+    private String country;
+    private String zipCode;
+    
 }
+
+
+
 

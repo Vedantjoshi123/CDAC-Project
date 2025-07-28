@@ -30,20 +30,21 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const navLinks = () => {
-    if (!currentUser) return null;
+ const navLinks = () => {
+  if (!currentUser) return null;
 
-    switch (currentUser.userRole?.toUpperCase()) {
-      case 'STUDENT':
-        return <Link to="/my-enrollments">My Enrollments</Link>;
-      case 'TEACHER':
-        return <Link to="/teacher">Teacher Dashboard</Link>;
-      case 'ADMIN':
-        return <Link to="/admin">Admin Dashboard</Link>;
-      default:
-        return null;
-    }
-  };
+  switch (currentUser.userRole?.toUpperCase()) {
+    case 'STUDENT':
+      return <Link to="/student">Student Dashboard</Link>; // 👈 updated route
+    case 'TEACHER':
+      return <Link to="/teacher">Teacher Dashboard</Link>;
+    case 'ADMIN':
+      return <Link to="/admin">Admin Dashboard</Link>;
+    default:
+      return null;
+  }
+};
+
 
   return (
     <div className="py-4 px-6 md:px-14 lg:px-32 flex items-center justify-between bg-[var(--color-bg)]">

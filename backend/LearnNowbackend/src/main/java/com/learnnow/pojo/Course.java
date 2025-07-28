@@ -20,14 +20,14 @@ public class Course extends BaseEntity {
 
     @Column(nullable = false, length = 255)
     private String title;
-
+      
     @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double discount;
 
     @Column(length = 1000)
@@ -48,6 +48,7 @@ public class Course extends BaseEntity {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Purchase> purchases;
+    
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> chapters;
 

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @DiscriminatorValue("ADMIN")
-public class Admin extends UserEntity {
+public class Admin extends UserEntity {   // not needed 
 
     @Column(length = 100)
     private String accessLevel; // optional admin-specific field

@@ -21,9 +21,14 @@ import lombok.Setter;
 @DiscriminatorValue("STUDENT")
 public class Student extends UserEntity {
 	
-
     @Size(max = 50)
     private String gradeLevel;
+
+    @Size(max = 100)
+    private String collegeName;
+
+    @Size(max = 15)
+    private String contactNumber;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Purchase> enrollments;

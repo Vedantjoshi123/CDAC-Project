@@ -27,7 +27,7 @@ import AdminSettings from './pages/admin/AdminSettings';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTestimonial from './pages/admin/AdminTestimonial';
 import AdminTeachersList from './pages/admin/AdminTeachersList';
-import AdminCoursesList from './pages/admin/AdminCoursesList';
+import AddCategory from './pages/admin/AddCategory';
 import AllContactUs from './pages/admin/AllContactUs';
 import ContactUs from './pages/common/ContactUs';
 import AboutUsSection from './pages/common/AboutUs';
@@ -40,7 +40,7 @@ import StudentSettings from './pages/student/StudentSettings';
 const App = () => {
   return (
     <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000}  />
       <Navbar />
 
 
@@ -55,9 +55,7 @@ const App = () => {
           <Route path="/course/:id" element={<CourseDetails />} />
           <Route path="/contact" element={<ContactUs />} />
 
-          <Route path="/my-enrollments" element={
-            <PrivateRoute><MyEnrollments /></PrivateRoute>
-          } />
+        
           <Route path="/player/:courseId" element={
             <PrivateRoute><Player /></PrivateRoute>
           } />
@@ -86,20 +84,22 @@ const App = () => {
             <Route path="student-courses" element={<StudentCourses />} />
             <Route path="student-profile" element={<StudentProfile />} />
             <Route path="student-settings" element={<StudentSettings />} />
-            {/* Add other student routes here */}
+            <Route path="my-enrollments" element={<MyEnrollments />} />
           </Route>
-          <Route path="/admin" element={
-            <RoleBasedRoute allowedRoles={['ADMIN']}><Admin /></RoleBasedRoute>
-          } />
 
-          <Route path="/admin" element={<Admin />}>
+
+
+          <Route path="/admin" element={
+            <RoleBasedRoute allowedRoles={['ADMIN']}>
+              <Admin />
+            </RoleBasedRoute>
+          }>
             <Route index element={<AdminDashboard />} />
             <Route path="testimonials" element={<AdminTestimonial />} />
             <Route path="teachers" element={<AdminTeachersList />} />
-            <Route path="courses" element={<AdminCoursesList />} />
+            <Route path="categories" element={<AddCategory />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="allContactUs" element={<AllContactUs />} />
-
           </Route>
 
           <Route path="*" element={<Navigate to="/login" />} />

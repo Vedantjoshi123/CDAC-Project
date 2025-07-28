@@ -4,17 +4,22 @@ import Loading from '../../components/student/Loading'
 
 const MyCourses = () => {
   const { currency, allCourses } = useContext(AppContext)
-  const [courses, setCourses] = useState(null)
-
-  const fetchTeacherCourses = async () => {
-    setCourses(allCourses)
-  }
+  const [courses, setCourses] = useState([]) // ✅ Default to empty array
 
   useEffect(() => {
-    fetchTeacherCourses()
-  }, [])
+    if (Array.isArray(allCourses)) {
+      setCourses(allCourses)
+    } else {
+      setCourses([]) // fallback if it's null or something else
+    }
+  }, [allCourses]) // ✅ watch changes in allCourses
 
-  return courses ? (
+if (!courses) return <Loading />;
+if (courses.length === 0)
+  return <div className="p-8 text-center text-gray-500">No courses found.</div>;
+
+
+  return (
     <div
       className="h-screen overflow-scroll flex flex-col items-start justify-between md:p-8 p-4 pt-8 pb-0"
       style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
@@ -77,8 +82,6 @@ const MyCourses = () => {
         </div>
       </div>
     </div>
-  ) : (
-    <Loading />
   )
 }
 

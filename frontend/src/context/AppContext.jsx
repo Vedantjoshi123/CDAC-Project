@@ -1,14 +1,14 @@
 import { createContext, useEffect, useState } from "react";
-import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
+import axios from "axios";
 
 // Create context
 export const AppContext = createContext();
 
 function AppContextProvider(props) {
   const navigate = useNavigate();
-
+  const [courseCategories, setCourseCategories] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [token, setToken] = useState(() => localStorage.getItem("token") || null);
@@ -31,13 +31,20 @@ function AppContextProvider(props) {
       setToken(localToken);
     }
   }, []);
-
+  const addCategory = (category) => {
+    if (!category || courseCategories.includes(category)) return;
+    setCourseCategories((prev) => [...prev, category]);
+  };
   const login = (userData, jwtToken) => {
+     if (!userData || !jwtToken) {
+    toast.error("Invalid login attempt.");
+    return;
+  }
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", jwtToken);
     setUser(userData);
     setToken(jwtToken);
-
+  toast.dismiss();
     if (userData.userRole === "STUDENT") navigate("/student/dashboard");
     else if (userData.userRole === "TEACHER") navigate("/teacher/dashboard");
     else if (userData.userRole === "ADMIN") navigate("/admin/dashboard");
@@ -52,13 +59,45 @@ function AppContextProvider(props) {
     navigate("/login");
   };
 
-  const fetchAllCourses = async () => {
-    setAllCourses(dummyCourses);
-  };
+const fetchAllCourses = async () => {
+  try {
+    const res = await axios.get(`/courses`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  const fetchUserEnrolledCourse = async () => {
-    setEnrolledCourses(dummyCourses);
-  };
+    // ✅ Safely extract the array
+    const data = Array.isArray(res.data)
+      ? res.data
+      : Array.isArray(res.data?.data)
+      ? res.data.data
+      : [];
+
+    setAllCourses(data);
+  } catch (err) {
+    console.error("Failed to fetch courses", err);
+    setAllCourses([]); // fallback
+  }
+};
+
+
+const fetchUserEnrolledCourse = async () => {
+  if (!user?.id || user?.userRole?.toUpperCase() !== "STUDENT") return;
+
+  try {
+    const response = await axios.get(`/enrollments/student/${user.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = Array.isArray(response.data) ? response.data : []; // ✅ fix
+    setEnrolledCourses(data);
+  } catch (err) {
+    console.error("Failed to fetch enrolled courses", err);
+    setEnrolledCourses([]); // ✅ fallback on error
+  }
+};
+
 
   const calculateRating = (course) => {
     if (!course.courseRatings?.length) return 0;
@@ -86,9 +125,13 @@ function AppContextProvider(props) {
   };
 
   useEffect(() => {
-    fetchAllCourses();
-    if (user) fetchUserEnrolledCourse();
-  }, [user]);
+    if (token) {
+      fetchAllCourses();
+      if (user?.userRole?.toUpperCase() === "STUDENT") {
+        fetchUserEnrolledCourse();
+      }
+    }
+  }, [user, token]);
 
   const value = {
     navigate,

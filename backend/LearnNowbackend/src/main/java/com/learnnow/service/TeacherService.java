@@ -1,10 +1,12 @@
 package com.learnnow.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.learnnow.dto.TeacherRequestDTO;
+import com.learnnow.dto.TeacherResponseDTO;
+
 public interface TeacherService {
-//    TeacherResponseDTO createTeacher(TeacherRequestDTO request);
-//	  public TeacherResponseDTO updateTeacher(Long id, TeacherRequestDTO teacherDTO, MultipartFile imageFile);
-//    List<TeacherResponseDTO> getAllTeachers();
-//    TeacherResponseDTO getTeacherById(Long id);
-//    String deleteTeacher(Long id);
+	  public TeacherResponseDTO updateTeacher(Long id, TeacherRequestDTO dto, MultipartFile file);
+
 
 }

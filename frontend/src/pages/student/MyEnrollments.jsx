@@ -3,6 +3,8 @@ import { AppContext } from '../../context/AppContext';
 import { Line } from 'rc-progress';
 const MyEnrollments = () => {
   const { enrolledCourses, calculateCourseDuration, navigate } = useContext(AppContext);
+  console.log('enrolledCourses:', enrolledCourses);
+
 
   const [progressArray] = useState([
     { lectureCompleted: 2, totalLectures: 4 },
@@ -44,7 +46,8 @@ const MyEnrollments = () => {
               </tr>
             </thead>
             <tbody>
-              {enrolledCourses.map((course, index) => (
+              {Array.isArray(enrolledCourses) &&
+                enrolledCourses.map((course, index) => (
                 <tr
                   key={index}
                   style={{
