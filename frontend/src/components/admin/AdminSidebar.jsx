@@ -5,7 +5,7 @@ import { Home, BookOpen, Users, MessageCircle, Settings, Contact } from 'lucide-
 const AdminSidebar = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: <Home size={24} /> },
-    { name: 'All Courses', path: '/admin/courses', icon: <BookOpen size={24} /> },
+    { name: 'Add categories', path: '/admin/categories', icon: <BookOpen size={24} /> },
     { name: 'All Teachers', path: '/admin/teachers', icon: <Users size={24} /> },
     { name: 'Testimonials', path: '/admin/testimonials', icon: <MessageCircle size={24} /> },
     { name: 'Contact Us', path: '/admin/allContactUs', icon: <Contact size={24} /> },

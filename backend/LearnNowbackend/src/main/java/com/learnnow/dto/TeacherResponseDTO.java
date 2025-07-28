@@ -2,8 +2,6 @@ package com.learnnow.dto;
 
 import java.time.LocalDate;
 
-import com.learnnow.pojo.UserRole;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,15 +13,19 @@ public class TeacherResponseDTO extends BaseDTO {
     private String lastName;
     private String email;
     private LocalDate dob;
-    private String image;
-    private UserRole userRole;   // needed or not? 
+    
+    private String imageUrl;
+    
     private String qualification;
     private String specialization;
     private String experience;
     private String about;
 
-
-    private AddressResponseDTO address;
+    private String street;
+    private String city;
+    private String state;
+    private String country;
+    private String zipCode;
 
 
 }

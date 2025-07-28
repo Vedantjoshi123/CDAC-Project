@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, Users, MessageSquare, User, Settings } from 'lucide-react';
+import { Home, BookOpen, Users, Settings, CirclePlus } from 'lucide-react';
 
 const studentMenu = [
   { name: 'Dashboard', path: '/student/student-dashboard', icon: <Home size={24} /> },
   { name: 'My Courses', path: '/student/student-courses', icon: <BookOpen size={24} /> },
-  { name: 'Profile', path: '/student/student-profile', icon: <User size={24} /> },
+  { name: 'Profile', path: '/student/student-profile', icon: <Users size={24} /> },
   { name: 'Settings', path: '/student/student-settings', icon: <Settings size={24} /> },
+  { name: 'My Enrollments', path: '/student/my-enrollments', icon: <CirclePlus size={24} /> },
 ];
 
 const StudentSidebar = () => {
