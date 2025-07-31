@@ -7,8 +7,12 @@ import com.learnnow.dto.CategoryResponseDTO;
 
 public interface CategoryService {
     CategoryResponseDTO createCategory(CategoryRequestDTO dto);
-    CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO dto);
-    List<CategoryResponseDTO> getAllCategories();
-    CategoryResponseDTO getCategoryById(Long id);
-    void deleteCategory(Long id);
+
+	void softDeleteCategory(Long id);
+
+	List<CategoryResponseDTO> getAllActiveCategories();
+
+	CategoryResponseDTO getActiveCategoryById(Long id);
+
+	CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO dto);
 }

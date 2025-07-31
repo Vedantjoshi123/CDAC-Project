@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import {
-  getAllCategories,
   addCategory,
+  getAllCategories,
   deleteCategory,
   updateCategory,
-} from '../../services/categoryService';
-import { toast } from 'react-toastify';
-import { FaPlus, FaTrash, FaEdit, FaSave, FaTag } from 'react-icons/fa';
+} from "../../services/categoryService";
+import { toast } from "react-toastify";
+import { config } from "../../services/config";
+import { Pencil, Trash2 } from "lucide-react";
 
-const AddCategory = () => {
+function AddCategory() {
+  const [newTitle, setNewTitle] = useState("");
+  const [newIcon, setNewIcon] = useState(null);
+  const [previewIcon, setPreviewIcon] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [newTitle, setNewTitle] = useState('');
-  const [newIcon, setNewIcon] = useState('');
-  const [editIndex, setEditIndex] = useState(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editIcon, setEditIcon] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchCategories();
@@ -22,208 +23,168 @@ const AddCategory = () => {
 
   const fetchCategories = async () => {
     const res = await getAllCategories();
-    if (res.status === 'success') {
+    if (res.status === "success") {
       setCategories(res.data || []);
     } else {
-      toast.error('Failed to load categories');
+      toast.error("Failed to fetch categories");
     }
   };
 
-  const handleAddCategory = async () => {
+  const resetForm = () => {
+    setNewTitle("");
+    setNewIcon(null);
+    setPreviewIcon(null);
+    setEditingId(null);
+    if (fileInputRef.current) fileInputRef.current.value = null;
+  };
+
+  const handleImagePreview = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewIcon(file);
+      setPreviewIcon(URL.createObjectURL(file));
+    }
+  };
+
+  const resolveImageUrl = (iconPath) => {
+    if (!iconPath) return "https://via.placeholder.com/80?text=No+Image";
+    return iconPath.startsWith("http")
+      ? iconPath
+      : `${config.serverUrl}/${iconPath}`;
+  };
+
+  const handleSubmit = async () => {
     const trimmed = newTitle.trim();
-    if (!trimmed) {
-      toast.warning('Category title is required');
+    if (!trimmed || (!newIcon && !editingId)) {
+      toast.warning("Both title and icon are required");
       return;
     }
 
-    if (categories.some(cat => cat.title.toLowerCase() === trimmed.toLowerCase())) {
-      toast.info(`Category "${trimmed}" already exists`);
-      return;
-    }
+    const res = editingId
+      ? await updateCategory(editingId, trimmed, newIcon)
+      : await addCategory(trimmed, newIcon);
 
-    const res = await addCategory(trimmed, newIcon.trim());
-    if (res.status === 'success') {
-      toast.success(`Category "${trimmed}" added`);
-      setNewTitle('');
-      setNewIcon('');
+    if (res.status === "success") {
+      toast.success(
+        editingId ? "Category updated successfully" : "Category added"
+      );
+      resetForm();
       fetchCategories();
     } else {
-      toast.error(res.message || 'Failed to add category');
+      toast.error(res.message);
     }
+  };
+
+  const handleEdit = (cat) => {
+    setEditingId(cat.id);
+    setNewTitle(cat.title);
+    setPreviewIcon(resolveImageUrl(cat.icon));
   };
 
   const handleDelete = async (id) => {
     const res = await deleteCategory(id);
-    if (res.status === 'success') {
-      toast.success('Category deleted');
+    if (res.status === "success") {
+      toast.success("Category deleted");
       fetchCategories();
     } else {
-      toast.error(res.message || 'Failed to delete');
-    }
-  };
-
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    setEditTitle(categories[index].title);
-    setEditIcon(categories[index].icon);
-  };
-
-  const handleSaveEdit = async (id) => {
-    const trimmed = editTitle.trim();
-    if (!trimmed) {
-      toast.warning('Title cannot be empty');
-      return;
-    }
-
-    const isDuplicate = categories.some(
-      (cat, i) =>
-        i !== editIndex && cat.title.toLowerCase() === trimmed.toLowerCase()
-    );
-    if (isDuplicate) {
-      toast.warning(`Category "${trimmed}" already exists`);
-      return;
-    }
-
-    const res = await updateCategory(id, trimmed, editIcon.trim());
-    if (res.status === 'success') {
-      toast.success('Category updated');
-      setEditIndex(null);
-      fetchCategories();
-    } else {
-      toast.error(res.message || 'Update failed');
+      toast.error(res.message);
     }
   };
 
   return (
-    <div
-      className="min-h-screen w-full p-6"
-      style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
-    >
-      <h2 className="text-3xl font-bold mb-8">Manage Course Categories</h2>
+    <div className="p-4 md:p-8 bg-[var(--color-bg)] text-[var(--color-text)] min-h-screen">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-[var(--color-bg)] shadow-md rounded-xl p-6 border border-[var(--color-border)]">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-[var(--color-primary)] mb-6">
+          {editingId ? "Edit Category" : "Add New Category"}
+        </h2>
 
-      {/* Add Category */}
-      <div
-        className="rounded-lg p-6 mb-10 shadow-md"
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-        }}
-      >
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <FaPlus /> Add New Category
-        </h3>
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <input
             type="text"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="Category Title"
-            className="flex-1 px-4 py-2 rounded border"
-            style={{
-              backgroundColor: 'var(--color-input-bg)',
-              color: 'var(--color-text)',
-              borderColor: 'var(--color-border)',
-            }}
+            placeholder="Enter category title"
+            className="border px-4 py-2 rounded-md outline-none bg-transparent text-sm md:text-base"
+            style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
           />
+
           <input
-            type="text"
-            value={newIcon}
-            onChange={(e) => setNewIcon(e.target.value)}
-            placeholder="Emoji or Icon URL (optional)"
-            className="flex-1 px-4 py-2 rounded border"
-            style={{
-              backgroundColor: 'var(--color-input-bg)',
-              color: 'var(--color-text)',
-              borderColor: 'var(--color-border)',
-            }}
+            ref={fileInputRef}
+            type="file"
+            onChange={handleImagePreview}
+            accept="image/*"
+            className="text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-white hover:file:opacity-90"
           />
+        </div>
+
+        {previewIcon && (
+          <div className="mb-4 text-center">
+            <p className="font-medium text-sm mb-2">Image Preview</p>
+            <img
+              src={previewIcon}
+              alt="Preview"
+              className="w-28 h-28 mx-auto object-contain rounded-lg border bg-white"
+            />
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-4">
           <button
-            onClick={handleAddCategory}
-            className="px-5 py-2 rounded text-white"
-            style={{ backgroundColor: 'var(--color-primary)' }}
+            onClick={handleSubmit}
+            className="bg-[var(--color-primary)] hover:bg-opacity-90 text-white px-6 py-2 rounded-lg w-full sm:w-auto"
           >
-            Add
+            {editingId ? "Update" : "Add"} Category
           </button>
+          {editingId && (
+            <button
+              onClick={resetForm}
+              className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg w-full sm:w-auto"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Category List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((cat, index) => (
+      <h3 className="text-xl font-semibold mt-10 mb-4 text-center">
+        All Categories
+      </h3>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
+        {categories.map((cat) => (
           <div
-            key={cat.id || index}
-            className="rounded-lg p-4 shadow flex flex-col gap-2"
-            style={{
-              backgroundColor: 'var(--color-surface)',
-              border: '1px solid var(--color-border)',
-            }}
+            key={cat.id}
+            className="flex flex-col items-center bg-white dark:bg-gray-100 rounded-xl shadow hover:shadow-md p-4 transition border border-[var(--color-border)]"
           >
-            {editIndex === index ? (
-              <>
-                <input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className="px-3 py-2 rounded border"
-                  style={{
-                    backgroundColor: 'var(--color-input-bg)',
-                    color: 'var(--color-text)',
-                    borderColor: 'var(--color-border)',
-                  }}
-                />
-                <input
-                  value={editIcon}
-                  onChange={(e) => setEditIcon(e.target.value)}
-                  className="px-3 py-2 rounded border"
-                  style={{
-                    backgroundColor: 'var(--color-input-bg)',
-                    color: 'var(--color-text)',
-                    borderColor: 'var(--color-border)',
-                  }}
-                />
-                <div className="flex justify-end gap-2 mt-2">
-                  <button
-                    onClick={() => handleSaveEdit(cat.id)}
-                    className="px-4 py-1 rounded text-white"
-                    style={{ backgroundColor: 'var(--color-success)' }}
-                  >
-                    <FaSave />
-                  </button>
-                  <button
-                    onClick={() => setEditIndex(null)}
-                    className="px-4 py-1 rounded text-white"
-                    style={{ backgroundColor: 'var(--color-secondary)' }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-3 text-lg">
-                  <span className="text-2xl">{cat.icon || <FaTag />}</span>
-                  <span>{cat.title}</span>
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    onClick={() => handleEdit(index)}
-                    className="px-3 py-2 rounded text-white bg-yellow-500 hover:bg-yellow-600"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(cat.id)}
-                    className="px-3 py-1 rounded text-white bg-red-500 hover:bg-red-600" 
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </>
-            )}
+            <img
+              src={resolveImageUrl(cat.icon)}
+              alt={cat.title}
+              className="w-20 h-20 object-fill rounded-full border mb-2 bg-white"
+              style={{ borderColor: "var(--color-border)" }}
+            />
+            <span className="text-sm text-center font-medium text-[var(--color-text-secondary)]">
+              {cat.title}
+            </span>
+
+            <div className="flex justify-center gap-4 mt-3">
+              <button
+                onClick={() => handleEdit(cat)}
+                className="p-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Pencil size={18} />
+              </button>
+              <button
+                onClick={() => handleDelete(cat.id)}
+                className="p-1 rounded-full bg-red-600 hover:bg-red-700 text-white"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default AddCategory;
