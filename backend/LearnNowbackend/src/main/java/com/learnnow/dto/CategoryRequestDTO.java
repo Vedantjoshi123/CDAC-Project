@@ -1,12 +1,14 @@
 package com.learnnow.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryRequestDTO extends BaseDTO {
+public class CategoryRequestDTO {
     private String title;
-    private String icon;
+    private MultipartFile  icon;
     
 }

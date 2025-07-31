@@ -138,7 +138,12 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
-
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<?> handleDuplicateResource(DuplicateResourceException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", ex.getMessage()));
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleAllOtherExceptions(Exception ex, WebRequest request) {
         logger.error("Unhandled exception occurred", ex);
