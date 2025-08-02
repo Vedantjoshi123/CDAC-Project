@@ -33,7 +33,7 @@ public class LessonController {
     }
 
     @DeleteMapping("/{lessonId}")
-    public void deleteLesson(@PathVariable Long lessonId) {
+    public void deleteLesson(@PathVariable Long lessonId) {	
         lessonService.deleteLesson(lessonId);
     }
  

@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CourseResponseDTO {
-    private Long id;
+public class CourseResponseDTO extends BaseDTO{
     private String title;
     private String description;
     private double price;

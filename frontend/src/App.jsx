@@ -3,7 +3,6 @@ import Home from './pages/student/Home';
 import CoursesList from './pages/student/CoursesList';
 import CourseDetails from './pages/student/CourseDetails';
 import MyEnrollments from './pages/student/MyEnrollments';
-// import Studentdashboard from './pages/student/Sdashboard';
 import Player from './pages/student/Player';
 import Loading from './components/student/Loading';
 import Teacher from './pages/teacher/Teacher';
