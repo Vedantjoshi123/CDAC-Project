@@ -105,6 +105,13 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.3</version>
 		</dependency>
+		<dependency>
+  <groupId>com.stripe</groupId>
+  <artifactId>stripe-java</artifactId>
+  <version>24.10.0</version> <!-- Latest as of Aug 2025 -->
+</dependency>
+
+
 	</dependencies>
 
 	<build>
