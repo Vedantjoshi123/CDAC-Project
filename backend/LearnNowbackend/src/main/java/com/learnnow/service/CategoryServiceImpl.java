@@ -15,9 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.learnnow.dao.CategoryDao;
 import com.learnnow.dto.CategoryRequestDTO;
 import com.learnnow.dto.CategoryResponseDTO;
+import com.learnnow.dto.ChapterRequestDTO;
+import com.learnnow.dto.ChapterResponseDTO;
 import com.learnnow.exception.DuplicateResourceException;
 import com.learnnow.exception.ResourceNotFoundException;
 import com.learnnow.pojo.Category;
+import com.learnnow.pojo.Chapter;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -110,4 +113,7 @@ public class CategoryServiceImpl implements CategoryService {
         cat.setActive(false);
         categoryDao.save(cat);
     }
+    
+
+
 }

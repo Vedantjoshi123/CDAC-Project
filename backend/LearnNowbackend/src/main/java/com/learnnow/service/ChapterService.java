@@ -5,7 +5,7 @@ import com.learnnow.dto.ChapterRequestDTO;
 import com.learnnow.dto.ChapterResponseDTO;
 
 public interface ChapterService {
-    ChapterResponseDTO addChapter(Long courseId, ChapterRequestDTO dto);
     List<ChapterResponseDTO> getChaptersByCourse(Long courseId);
-    void deleteChapter(Long chapterId);
+
+	ChapterResponseDTO addChapter(Long courseId, ChapterRequestDTO dto);
 }

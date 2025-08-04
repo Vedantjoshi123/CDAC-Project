@@ -8,4 +8,5 @@ import lombok.Setter;
 public class LessonRequestDTO {
     private String title;
     private String content;
+    private Boolean isAvailable;
 }

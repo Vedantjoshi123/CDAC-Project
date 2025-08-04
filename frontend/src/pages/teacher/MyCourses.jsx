@@ -1,21 +1,31 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import Loading from '../../components/student/Loading';
 
 const MyCourses = () => {
   const { currency, allCourses, user } = useContext(AppContext);
   const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (Array.isArray(allCourses) && user?.userRole === 'TEACHER') {
-      const teacherCourses = allCourses.filter(course => {
-        return course.teacher?.id === user.id || course.teacherId === user.id;
-      });
+      const teacherCourses = allCourses.filter(course =>
+        course.teacher?.id === user.id || course.teacherId === user.id
+      );
       setCourses(teacherCourses);
     } else {
       setCourses([]);
     }
   }, [allCourses, user]);
+
+  const handleEditCourse = (courseId) => {
+    navigate(`/teacher/edit-course/${courseId}`);
+  };
+
+  const handleManageChapters = (courseId) => {
+    navigate(`/teacher/manage-chapters/${courseId}`);
+  };
 
   if (!courses) return <Loading />;
   if (courses.length === 0)
@@ -49,6 +59,7 @@ const MyCourses = () => {
                 <th className="px-4 py-3 font-semibold truncate">Earnings</th>
                 <th className="px-4 py-3 font-semibold truncate">Students</th>
                 <th className="px-4 py-3 font-semibold truncate">Published On</th>
+                <th className="px-4 py-3 font-semibold truncate">Actions</th>
               </tr>
             </thead>
             <tbody style={{ color: 'var(--color-text-secondary)' }}>
@@ -59,12 +70,11 @@ const MyCourses = () => {
                 >
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                     <img
-                      src={`http://localhost:8080/${course.thumbnail}`} // if `thumbnail = uploads/filename.jpg`
+                      src={`http://localhost:8080/${course.thumbnail}`}
                       alt="Course Thumbnail"
                       className="w-16 h-12 object-cover rounded border"
-                      onError={e => e.target.src = "/fallback.jpg"}
+                      onError={e => (e.target.src = "/fallback.jpg")}
                     />
-
                     <span className="truncate hidden md:block">{course.title}</span>
                   </td>
                   <td className="px-4 py-3">
@@ -79,6 +89,20 @@ const MyCourses = () => {
                     {course.createdOn
                       ? new Date(course.createdOn).toLocaleString()
                       : 'N/A'}
+                  </td>
+                  <td className="px-4 py-3 space-x-2">
+                    <button
+                      onClick={() => handleEditCourse(course.id)}
+                      className="px-3 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleManageChapters(course.id)}
+                      className="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700"
+                    >
+                      Add Chapters
+                    </button>
                   </td>
                 </tr>
               ))}

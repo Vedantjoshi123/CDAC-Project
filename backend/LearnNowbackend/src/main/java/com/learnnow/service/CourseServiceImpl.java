@@ -44,13 +44,53 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponseDTO createCourse(CourseRequestDTO dto) {
         return saveCourse(new Course(), dto);
     }
+	
+	@Override
+	public CourseResponseDTO updateCourse(Long id, CourseRequestDTO dto) {
+	    Course course = courseDao.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Course ID " + id + " not found"));
+	
+	    course.setTitle(dto.getTitle());
+	    course.setDescription(dto.getDescription());
+	    course.setOverview(dto.getOverview());
+	    course.setPrice(dto.getPrice());
+	    course.setDiscount(dto.getDiscount());
+	
+	    Category category = categoryDao.findById(dto.getCategoryId())
+	        .orElseThrow(() -> new ResourceNotFoundException("Category ID " + dto.getCategoryId() + " not found"));
+	    course.setCategory(category);
+	
+	    Teacher teacher = teacherDao.findById(dto.getTeacherId())
+	        .orElseThrow(() -> new ResourceNotFoundException("Teacher ID " + dto.getTeacherId() + " not found"));
+	    course.setTeacher(teacher);
+	
+	    try {
+	        // Save new thumbnail if provided
+	        MultipartFile thumbnail = dto.getThumbnail();
+	        if (thumbnail != null && !thumbnail.isEmpty()) {
+	            String fileName = UUID.randomUUID() + "_" + thumbnail.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+	            File dest = getUploadFile(thumbnailPath, fileName);
+	            thumbnail.transferTo(dest);
+	            course.setThumbnail(thumbnailPath + "/" + fileName);
+	        }
+	
+	        // Save new resource if provided
+	        MultipartFile resource = dto.getResource();
+	        if (resource != null && !resource.isEmpty()) {
+	            String fileName = UUID.randomUUID() + "_" + resource.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+	            File dest = getUploadFile(resourcePath, fileName);
+	            resource.transferTo(dest);
+	            course.setResource(resourcePath + "/" + fileName);
+	        }
+	
+	    } catch (IOException e) {
+	        throw new RuntimeException("File upload failed: " + e.getMessage());
+	    }
+	
+	    Course saved = courseDao.save(course);
+	    return convertToDTO(saved);
+	}
 
-//    @Override
-//    public CourseResponseDTO updateCourse(Long id, CourseRequestDTO dto) {
-//        Course existingCourse = courseDao.findByIdAndIsActiveTrue(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Course Id " + id + " not found"));
-//        return saveCourse(existing, dto);
-//    } 
 
     private CourseResponseDTO saveCourse(Course course, CourseRequestDTO dto) {
         try {
@@ -137,13 +177,13 @@ public class CourseServiceImpl implements CourseService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-//
-//    @Override
-//    public CourseResponseDTO getActiveCourseById(Long id) {
-//        Course course = courseDao.findByIdAndIsActiveTrue(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Course Id " + id + " not found"));
-//        return convertToDTO(course);
-//    }
+
+    @Override
+    public CourseResponseDTO getCourseById(Long id) {
+        Course course = courseDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course Id " + id + " not found"));
+        return convertToDTO(course);
+    }
 //
 //    @Override
 //    public void softDeleteCourse(Long id) {
@@ -152,4 +192,6 @@ public class CourseServiceImpl implements CourseService {
 //        course.setActive(false);
 //        courseDao.save(course);
 //    }
+
+	
 }
