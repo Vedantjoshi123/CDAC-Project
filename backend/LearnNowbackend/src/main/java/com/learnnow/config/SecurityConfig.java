@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,7 +36,9 @@ public class SecurityConfig {
         	.cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/testimonials/**", "/contactus/**", "/categories/**", "/uploads/**").permitAll()
+                .requestMatchers("/auth/**", "/testimonials/**", "/contactus/**", "/categories/**", "/uploads/**", "/courses/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/teachers/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/feedbacks/average-rating/**").permitAll()
                 .anyRequest().authenticated()
 
             )

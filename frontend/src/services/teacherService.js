@@ -39,3 +39,14 @@ export async function updateTeacherProfile(teacherId, teacherData, token) {
     };
   }
 }
+
+export async function getTeacherById(teacherId) {
+  try {
+    const res = await axios.get(`${config.serverUrl}/teachers/${teacherId}`);
+    return res.data; 
+  } catch (err) {
+    console.error('Failed to get teacher by ID:', err);
+    return null;
+  }
+}
+

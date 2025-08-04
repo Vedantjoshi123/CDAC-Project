@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getAllCourses } from "../services/courseService";
+import { getAllCategories } from "../services/categoryService";  
 
 // Create context
 export const AppContext = createContext();
@@ -17,7 +19,7 @@ function AppContextProvider(props) {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-
+  const [categories, setCategories] = useState([]);     
   const isTeacher = user?.userRole?.toUpperCase() === "TEACHER";
   const isStudent = user?.userRole?.toUpperCase() === "STUDENT";
   const isLoggedIn = !!user && !!token;
@@ -32,10 +34,12 @@ function AppContextProvider(props) {
       setToken(localToken);
     }
   }, []);
+
   const addCategory = (category) => {
     if (!category || courseCategories.includes(category)) return;
     setCourseCategories((prev) => [...prev, category]);
   };
+
   const login = (userData, jwtToken) => {
      if (!userData || !jwtToken) {
     toast.error("Invalid login attempt.");
@@ -45,7 +49,7 @@ function AppContextProvider(props) {
     localStorage.setItem("token", jwtToken);
     setUser(userData);
     setToken(jwtToken);
-  toast.dismiss();
+    toast.dismiss();
     if (userData.userRole === "STUDENT") navigate("/student/dashboard");
     else if (userData.userRole === "TEACHER") navigate("/teacher/dashboard");
     else if (userData.userRole === "ADMIN") navigate("/admin/dashboard");
@@ -61,25 +65,29 @@ function AppContextProvider(props) {
   };
 
 const fetchAllCourses = async () => {
-  try {
-    const res = await axios.get(`/courses`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const result = await getAllCourses();
 
-    // ✅ Safely extract the array
-    const data = Array.isArray(res.data)
-      ? res.data
-      : Array.isArray(res.data?.data)
-      ? res.data.data
-      : [];
-
+  if (result.status === "success") {
+    const data = Array.isArray(result.data) ? result.data : [];
+    console.log("Fetched Courses:", data); // 👈 See what each course object contains
     setAllCourses(data);
-  } catch (err) {
-    console.error("Failed to fetch courses", err);
-    setAllCourses([]); // fallback
+  } else {
+    console.error("Failed to fetch courses:", result.message);
+    setAllCourses([]);
   }
 };
 
+
+const fetchAllCategories = async () => {
+  const result = await getAllCategories();
+  if (result.status === "success") {
+    const data = Array.isArray(result.data) ? result.data : [];
+    setCategories(data);
+  } else {
+    console.error("Failed to fetch categories:", result.message);
+    setCategories([]);
+  }
+};
 
 const fetchUserEnrolledCourse = async () => {
   if (!user?.id || user?.userRole?.toUpperCase() !== "STUDENT") return;
@@ -101,9 +109,11 @@ const fetchUserEnrolledCourse = async () => {
 
 
   const calculateRating = (course) => {
-    if (!course.courseRatings?.length) return 0;
-    const total = course.courseRatings.reduce((sum, r) => sum + r.rating, 0);
-    return total / course.courseRatings.length;
+    if (!course || !Array.isArray(course.courseRatings)) return "0.0";
+    const ratings = course.courseRatings;
+    if (!ratings.length) return "0.0";
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    return (sum / ratings.length).toFixed(1);
   };
 
   const calculateChapterTime = (chapter) => {
@@ -137,6 +147,7 @@ const fetchUserEnrolledCourse = async () => {
   const value = {
     navigate,
     allCourses,
+    fetchAllCourses,
     enrolledCourses,
     fetchUserEnrolledCourse,
     calculateRating,
@@ -150,7 +161,9 @@ const fetchUserEnrolledCourse = async () => {
     isLoggedIn,
     userRole,
     isTeacher,
-    isStudent,
+    isStudent, 
+    categories,
+    fetchAllCategories,
   };
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;
