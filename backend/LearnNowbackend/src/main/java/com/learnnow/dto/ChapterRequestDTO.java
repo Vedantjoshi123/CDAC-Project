@@ -1,5 +1,7 @@
 package com.learnnow.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class ChapterRequestDTO {
     private String title;
-    private String resource;
+    private MultipartFile resource;
 }

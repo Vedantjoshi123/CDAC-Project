@@ -10,4 +10,5 @@ import lombok.Setter;
 public class LessonResponseDTO extends BaseEntity{
     private String title;
     private String content;
+    private boolean isAvailable; 
 }

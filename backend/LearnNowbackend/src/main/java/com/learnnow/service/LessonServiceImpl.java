@@ -10,6 +10,7 @@ import com.learnnow.dao.ChapterDao;
 import com.learnnow.dao.LessonDao;
 import com.learnnow.dto.LessonRequestDTO;
 import com.learnnow.dto.LessonResponseDTO;
+import com.learnnow.exception.ResourceNotFoundException;
 import com.learnnow.pojo.Chapter;
 import com.learnnow.pojo.Lesson;
 
@@ -25,50 +26,60 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonResponseDTO addLesson(Long chapterId, LessonRequestDTO dto) {
         Chapter chapter = chapterDao.findById(chapterId)
-                .orElseThrow(() -> new RuntimeException("Chapter not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
 
         Lesson lesson = new Lesson();
         lesson.setTitle(dto.getTitle());
-   
+        lesson.setContent(dto.getContent());
+        lesson.setAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : true);
         lesson.setChapter(chapter);
+        lesson.setActive(true);
 
         Lesson saved = lessonDao.save(lesson);
-
-        LessonResponseDTO response = new LessonResponseDTO();
-        response.setId(saved.getId());
-        response.setCreatedOn(saved.getCreatedOn());
-        response.setUpdatedOn(saved.getUpdatedOn());
-        response.setTitle(saved.getTitle());
-        response.setContent(saved.getContent());
-
-        return response;
+        return convertToDTO(saved);
     }
 
     @Override
     public List<LessonResponseDTO> getLessonsByChapter(Long chapterId) {
         Chapter chapter = chapterDao.findById(chapterId)
-                .orElseThrow(() -> new RuntimeException("Chapter not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
 
         return lessonDao.findByChapterAndIsActiveTrue(chapter).stream()
-                .map(lesson -> {
-                    LessonResponseDTO dto = new LessonResponseDTO();
-                    dto.setId(lesson.getId());
-                    dto.setCreatedOn(lesson.getCreatedOn());
-                    dto.setUpdatedOn(lesson.getUpdatedOn());
-                    dto.setTitle(lesson.getTitle());
-                    dto.setContent(lesson.getContent());
-                    return dto;
-                })
-                .collect(Collectors.toList());
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
     }
 
-    @Override
-    public void deleteLesson(Long lessonId) {
-        Lesson lesson = lessonDao.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Lesson not found"));
+//    @Override
+//    public LessonResponseDTO updateLesson(Long lessonId, LessonRequestDTO dto) {
+//        Lesson lesson = lessonDao.findById(lessonId)
+//            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+//
+//        lesson.setTitle(dto.getTitle());
+//        lesson.setContent(dto.getContent());
+//        lesson.setAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : lesson.isAvailable());
+//
+//        Lesson updated = lessonDao.save(lesson);
+//        return convertToDTO(updated);
+//    }
 
-        lesson.setActive(false);
-        lessonDao.save(lesson);
+//    @Override
+//    public void softDeleteLesson(Long lessonId) {
+//        Lesson lesson = lessonDao.findById(lessonId)
+//            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+//
+//        lesson.setActive(false);
+//        lessonDao.save(lesson);
+//    }
+
+    private LessonResponseDTO convertToDTO(Lesson lesson) {
+        LessonResponseDTO dto = new LessonResponseDTO();
+        dto.setId(lesson.getId());
+        dto.setTitle(lesson.getTitle());
+        dto.setContent(lesson.getContent());
+        dto.setAvailable(lesson.isAvailable());
+        dto.setCreatedOn(lesson.getCreatedOn());
+        dto.setUpdatedOn(lesson.getUpdatedOn());
+        return dto;
     }
     
 }

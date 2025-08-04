@@ -90,7 +90,6 @@ export async function deleteCourse(courseId) {
   }
 }
 
-// Get course by ID (optional)
 export async function getCourseById(courseId) {
   try {
     const response = await axios.get(`${BASE_URL}/${courseId}`);

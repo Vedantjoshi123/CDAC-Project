@@ -69,7 +69,6 @@ const fetchAllCourses = async () => {
 
   if (result.status === "success") {
     const data = Array.isArray(result.data) ? result.data : [];
-    console.log("Fetched Courses:", data); // 👈 See what each course object contains
     setAllCourses(data);
   } else {
     console.error("Failed to fetch courses:", result.message);

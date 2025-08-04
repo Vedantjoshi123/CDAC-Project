@@ -3,7 +3,9 @@ package com.learnnow.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.learnnow.dto.ChapterRequestDTO;
 import com.learnnow.dto.ChapterResponseDTO;
@@ -16,18 +18,26 @@ public class ChapterController {
     @Autowired
     private ChapterService chapterService;
 
-    @PostMapping("/{courseId}")
-    public ChapterResponseDTO addChapter(@PathVariable Long courseId, @RequestBody ChapterRequestDTO dto) {
-        return chapterService.addChapter(courseId, dto);
+    @PostMapping(value = "/{courseId}", consumes = "multipart/form-data")
+    public ResponseEntity<ChapterResponseDTO> addChapter(@PathVariable Long courseId,
+                                                         @ModelAttribute ChapterRequestDTO dto) {
+        return ResponseEntity.ok(chapterService.addChapter(courseId, dto));
     }
 
     @GetMapping("/{courseId}")
-    public List<ChapterResponseDTO> getChapters(@PathVariable Long courseId) {
-        return chapterService.getChaptersByCourse(courseId);
+    public ResponseEntity<List<ChapterResponseDTO>> getChapters(@PathVariable Long courseId) {
+        return ResponseEntity.ok(chapterService.getChaptersByCourse(courseId));
     }
 
-    @DeleteMapping("/{chapterId}")
-    public void deleteChapter(@PathVariable Long chapterId) {
-        chapterService.deleteChapter(chapterId);
-    }
+//    @PutMapping(value = "/{chapterId}", consumes = "multipart/form-data")
+//    public ResponseEntity<ChapterResponseDTO> updateChapter(@PathVariable Long chapterId,
+//                                                            @ModelAttribute ChapterRequestDTO dto) {
+//        return ResponseEntity.ok(chapterService.updateChapter(chapterId, dto));
+//    }
+//
+//    @DeleteMapping("/{chapterId}")
+//    public ResponseEntity<String> deleteChapter(@PathVariable Long chapterId) {
+//        chapterService.deleteChapter(chapterId);
+//        return ResponseEntity.ok("Chapter deleted successfully.");
+//    }
 }

@@ -10,6 +10,8 @@ import Student from './pages/student/Student'
 import Register from './pages/common/Register';
 import TDashboard from './pages/teacher/Dashboard';
 import AddCourse from './pages/teacher/AddCourse';
+import EditCourse from './pages/teacher/EditCourse';
+import ManageChapter from './pages/teacher/ManageChapter';
 import MyCourses from './pages/teacher/MyCourses';
 import StudentsEnrolled from './pages/teacher/StudentsEnrolled';
 import Navbar from './components/common/Navbar';
@@ -68,6 +70,8 @@ const App = () => {
 
             <Route path="add-course" element={<AddCourse />} />
             <Route path="my-courses" element={<MyCourses />} />
+            <Route path="edit-course/:courseId" element={<EditCourse />} />
+            <Route path="manage-chapters/:courseId" element={<ManageChapter />} />
             <Route path="feedbacks" element={<Feedbacks />} />
             <Route path="settings" element={<Settings />} />
             <Route path="student-enrolled" element={<StudentsEnrolled />} />
