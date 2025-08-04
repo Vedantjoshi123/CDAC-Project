@@ -86,6 +86,11 @@ public class FeedBackController {
        return ResponseEntity.ok(feedbacks);
    }
 
+   @GetMapping("/average-rating/{courseId}")
+   public ResponseEntity<Double> getAverageRating(@PathVariable Long courseId) {
+       Double avg = feedBackService.getAverageRatingForCourse(courseId);
+       return ResponseEntity.ok(avg);
+   }
 
 
 

@@ -19,5 +19,11 @@ public interface FeedBackDao extends JpaRepository<FeedBack, Long>{
 	@Query("SELECT f FROM FeedBack f WHERE f.course.teacher.id = :teacherId AND f.isActive = true")
 	List<FeedBack> findActiveFeedbackByTeacherId(@Param("teacherId") Long teacherId);
 
+	 List<FeedBack> findByCourseId(Long courseId);
+
+	 @Query("SELECT AVG(f.rating) FROM FeedBack f WHERE f.course.id = :courseId AND f.isActive = true")
+	 Double findAverageRatingByCourseId(@Param("courseId") Long courseId);
+
+	 
 
 }

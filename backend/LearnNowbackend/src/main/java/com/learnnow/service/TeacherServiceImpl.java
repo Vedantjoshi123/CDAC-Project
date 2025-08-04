@@ -112,4 +112,11 @@ public class TeacherServiceImpl implements TeacherService {
 
         return response;
     }
+
+	@Override
+	public TeacherResponseDTO findById(Long id) {
+		 Teacher teacher = teacherDao.findById(id)
+			        .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with id " + id));
+		 return mapToResponseDTO(teacher);
+	}
 }

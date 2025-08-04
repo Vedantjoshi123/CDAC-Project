@@ -38,3 +38,15 @@ export async function addFeedback(courseId, feedbackData) {
     throw error;
   }
 }
+
+export async function getAverageRating(courseId) {
+  try {
+    const url = `${config.serverUrl}/feedbacks/average-rating/${courseId}`;
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching average rating:", error);
+    return 0;
+  }
+}
+

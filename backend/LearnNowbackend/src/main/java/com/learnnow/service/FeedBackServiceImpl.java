@@ -131,12 +131,23 @@ public class FeedBackServiceImpl implements FeedBackService {
                     }
                     if (f.getCourse() != null) {
                         dto.setCourseId(f.getCourse().getId());
-                    }
+                    }	
 
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Double getAverageRatingForCourse(Long courseId) {
+        Double average = feedBackDao.findAverageRatingByCourseId(courseId);
+        System.out.println("Average rating for course " + courseId + " = " + average);
+        return average != null ? average : 0.0;
+    }
+
+
+
+
 
 
 }

@@ -2,30 +2,36 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../context/AppContext';
 import SearchBar from '../../components/student/SearchBar';
 import { useParams } from 'react-router-dom';
-import CourseCard from '../../components/student/CourseCard';
 import { assets } from '../../assets/assets';
-import Footer from '../../components/common/Footer';
+import CourseCard from '../../components/student/CourseCard';
+
 
 const CoursesList = () => {
-  const { navigate, allCourses } = useContext(AppContext);
+  const { navigate, allCourses, fetchAllCourses } = useContext(AppContext);
   const { input } = useParams();
   const [filteredCourse, setFilteredCourse] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 4;
+  const coursesPerPage = 8;
 
-  useEffect(() => {
-    if (allCourses && allCourses.length > 0) {
-      const tempCourses = allCourses.slice();
-      const filtered = input
-        ? tempCourses.filter(item =>
+useEffect(() => {
+  if (!allCourses || allCourses.length === 0) {
+    fetchAllCourses();
+  }
+}, []);
+
+useEffect(() => {
+  if (allCourses && allCourses.length > 0) {
+    const tempCourses = allCourses.slice();
+    const filtered = input
+      ? tempCourses.filter(item =>
           item.courseTitle.toLowerCase().includes(input.toLowerCase())
         )
-        : tempCourses;
+      : tempCourses;
 
-      setFilteredCourse(filtered);
-      setCurrentPage(1);
-    }
-  }, [allCourses, input]);
+    setFilteredCourse(filtered);
+    setCurrentPage(1);
+  }
+}, [allCourses, input]);
 
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;

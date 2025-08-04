@@ -24,12 +24,11 @@ export async function getAllCourses() {
 // Add a new course
 export async function addCourse(courseFormData) {
   try {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     const response = await axios.post(BASE_URL, courseFormData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // Do NOT set Content-Type explicitly for FormData
       },
     });
 
@@ -48,7 +47,7 @@ export async function addCourse(courseFormData) {
 // Update a course
 export async function updateCourse(courseId, courseFormData) {
   try {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     const response = await axios.put(`${BASE_URL}/${courseId}`, courseFormData, {
       headers: {
@@ -71,7 +70,7 @@ export async function updateCourse(courseId, courseFormData) {
 // Delete a course
 export async function deleteCourse(courseId) {
   try {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     await axios.delete(`${BASE_URL}/${courseId}`, {
       headers: {

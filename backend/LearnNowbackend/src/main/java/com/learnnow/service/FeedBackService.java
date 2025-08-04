@@ -17,4 +17,10 @@ public interface FeedBackService {
 	List<FeedBackResponseDTO> getFeedbackByTeacherId(Long teacherId);
 	List<FeedBackResponseDTO> getFeedbackByCourseId(Long courseId);
 
+
+	Double getAverageRatingForCourse(Long courseId);
+
+
+
+
 }

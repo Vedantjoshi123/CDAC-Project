@@ -1,23 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AppContext } from '../../context/AppContext'
-import Loading from '../../components/student/Loading'
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../context/AppContext';
+import Loading from '../../components/student/Loading';
 
 const MyCourses = () => {
-  const { currency, allCourses } = useContext(AppContext)
-  const [courses, setCourses] = useState([]) // ✅ Default to empty array
+  const { currency, allCourses, user } = useContext(AppContext);
+  const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    if (Array.isArray(allCourses)) {
-      setCourses(allCourses)
+    if (Array.isArray(allCourses) && user?.userRole === 'TEACHER') {
+      const teacherCourses = allCourses.filter(course => {
+        return course.teacher?.id === user.id || course.teacherId === user.id;
+      });
+      setCourses(teacherCourses);
     } else {
-      setCourses([]) // fallback if it's null or something else
+      setCourses([]);
     }
-  }, [allCourses]) // ✅ watch changes in allCourses
+  }, [allCourses, user]);
 
-if (!courses) return <Loading />;
-if (courses.length === 0)
-  return <div className="p-8 text-center text-gray-500">No courses found.</div>;
-
+  if (!courses) return <Loading />;
+  if (courses.length === 0)
+    return <div className="p-8 text-center text-gray-500">No courses found.</div>;
 
   return (
     <div
@@ -50,30 +52,33 @@ if (courses.length === 0)
               </tr>
             </thead>
             <tbody style={{ color: 'var(--color-text-secondary)' }}>
-              {courses.map((course) => (
+              {courses.map(course => (
                 <tr
-                  key={course._id}
+                  key={course.id || course._id || course.title}
                   style={{ borderBottom: '1px solid var(--color-border)' }}
                 >
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                     <img
-                      src={course.courseThumbnail}
-                      alt="Course"
+                      src={`http://localhost:8080/${course.thumbnail}`} // if `thumbnail = uploads/filename.jpg`
+                      alt="Course Thumbnail"
                       className="w-16 h-12 object-cover rounded border"
-                      style={{ borderColor: 'var(--color-border)' }}
+                      onError={e => e.target.src = "/fallback.jpg"}
                     />
-                    <span className="truncate hidden md:block">{course.courseTitle}</span>
+
+                    <span className="truncate hidden md:block">{course.title}</span>
                   </td>
                   <td className="px-4 py-3">
                     {currency}
                     {Math.floor(
-                      course.enrolledStudents.length *
-                        (course.coursePrice - (course.discount * course.coursePrice) / 100)
+                      (course.enrolledStudents?.length || 0) *
+                      (course.price - (course.discount * course.price) / 100)
                     )}
                   </td>
-                  <td className="px-4 py-3">{course.enrolledStudents.length}</td>
+                  <td className="px-4 py-3">{course.enrolledStudents?.length || 0}</td>
                   <td className="px-4 py-3">
-                    {new Date(course.createdAt).toLocaleString()}
+                    {course.createdOn
+                      ? new Date(course.createdOn).toLocaleString()
+                      : 'N/A'}
                   </td>
                 </tr>
               ))}
@@ -82,7 +87,7 @@ if (courses.length === 0)
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyCourses
+export default MyCourses;

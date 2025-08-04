@@ -50,7 +50,7 @@ public class CourseServiceImpl implements CourseService {
 //        Course existingCourse = courseDao.findByIdAndIsActiveTrue(id)
 //                .orElseThrow(() -> new ResourceNotFoundException("Course Id " + id + " not found"));
 //        return saveCourse(existing, dto);
-//    }
+//    } 
 
     private CourseResponseDTO saveCourse(Course course, CourseRequestDTO dto) {
         try {
