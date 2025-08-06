@@ -19,15 +19,15 @@ const teamMembers = [
   },
   {
     name: "Vedant Joshi",
-    image: "src/assets/vedant.jpeg",
+    image: "src/assets/vedant.jpg",
     links: {
-      linkedin: "#",
-      github: "#"
+      linkedin: "https://www.linkedin.com/in/joshivedant/",
+      github: "https://github.com/Vedantjoshi123"
     }
   },
   {
     name: "Abhishek Athare",
-    image: "src/assets/abhishek.jpg",
+    image: "src/assets/abhishek.jpeg",
     links: {
       linkedin: "https://www.linkedin.com/in/abhishekathare2002/",
       github: "https://github.com/AbhishekAthare"
@@ -37,7 +37,7 @@ const teamMembers = [
     name: "Tushar Chavan",
     image: "src/assets/tushar.jpg",
     links: {
-      linkedin: "#",
+      linkedin: "https://www.linkedin.com/in/tushar-chavan-a5b157268",
       github: "#"
     }
   }
@@ -69,7 +69,7 @@ const AboutUsSection = () => {
       <div className="text-center py-10 my-10">
         <h2 className="text-3xl font-bold text-[var(--color-text)] mb-4">Meet the Team</h2>
         <p className="text-[var(--color-text-secondary)] max-w-xl mx-auto mb-8">
-          A passionate group of educators, developers, and creators driving innovation in e-learning.
+          A team of enthusiasts combining technology and education to build impactful e-learning experiences.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mt-6 max-w-6xl mx-auto">
