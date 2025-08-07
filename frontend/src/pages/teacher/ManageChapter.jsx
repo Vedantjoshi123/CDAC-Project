@@ -103,20 +103,19 @@ const ManageChaptersPage = () => {
     setEditChapterId(chapter.id);
     setChapterForm({
       title: chapter.title,
-      resource: null
+      resource: null, 
+      previewUrl: `http://localhost:8080/${chapter.resource}` 
     });
   };
 
   const handleDeleteChapter = async (chapterId) => {
-    if (window.confirm('Delete this chapter?')) {
-      const { status, message } = await deleteChapter(chapterId);
-      if (status === 'success') {
-        toast.success('Chapter deleted');
-        fetchChapters();
-      } else {
-        toast.error(message);
-      }
-    }
+    const { status, message } = await deleteChapter(chapterId);
+    if (status === 'success') {
+      toast.success('Chapter deleted');
+      fetchChapters();
+    } else {
+      toast.error(message);
+    }    
   };
 
   const handleLessonSubmit = async (chapterId) => {
@@ -168,14 +167,12 @@ const ManageChaptersPage = () => {
   };
 
   const handleDeleteLesson = async (lessonId) => {
-    if (window.confirm('Delete this lesson?')) {
-      const { status, message } = await deleteLesson(lessonId);
-      if (status === 'success') {
-        toast.success('Lesson deleted');
-        fetchChapters();
-      } else {
-        toast.error(message);
-      }
+    const { status, message } = await deleteLesson(lessonId);
+    if (status === 'success') {
+      toast.success('Lesson deleted');
+      fetchChapters();
+    } else {
+      toast.error(message);
     }
   };
 
@@ -202,6 +199,20 @@ const ManageChaptersPage = () => {
           className="w-full"
           accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"
         />
+        {(chapterForm.resource || chapterForm.previewUrl) && (
+        <div className="mt-2">
+          <p className="text-sm text-gray-600">Preview:</p>
+          <img
+            src={
+              chapterForm.resource
+                ? URL.createObjectURL(chapterForm.resource)
+                : chapterForm.previewUrl
+            }
+            alt="Chapter Resource"
+            className="w-48 h-auto border rounded shadow"
+          />
+        </div>
+      )}
         <button
           type="submit"
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"

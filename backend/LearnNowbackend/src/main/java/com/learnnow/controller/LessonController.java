@@ -37,18 +37,18 @@ public class LessonController {
         return ResponseEntity.ok(lessonService.getLessonsByChapter(chapterId));
     }
 
-//    @PutMapping("/{lessonId}")
-//    public ResponseEntity<LessonResponseDTO> updateLesson(
-//        @PathVariable Long lessonId,
-//        @RequestBody LessonRequestDTO dto) {
-//        
-//        return ResponseEntity.ok(lessonService.updateLesson(lessonId, dto));
-//    }
-//
-//    @DeleteMapping("/{lessonId}")
-//    public ResponseEntity<String> deleteLesson(@PathVariable Long lessonId) {
-//        lessonService.softDeleteLesson(lessonId);
-//        return ResponseEntity.ok("Lesson deleted successfully");
-//    }
+    @PutMapping("/{lessonId}")
+    public ResponseEntity<LessonResponseDTO> updateLesson(
+        @PathVariable Long lessonId,
+        @RequestBody LessonRequestDTO dto) {
+        
+        return ResponseEntity.ok(lessonService.updateLesson(lessonId, dto));
+    }
+
+    @DeleteMapping("/{lessonId}")
+    public ResponseEntity<String> deleteLesson(@PathVariable Long lessonId) {
+        lessonService.softDeleteLesson(lessonId);
+        return ResponseEntity.ok("Lesson deleted successfully");
+    }
 
 }
