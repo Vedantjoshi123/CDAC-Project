@@ -40,7 +40,13 @@ export async function deleteChapter(chapterId) {
 
 export const updateChapter = async (chapterId, updatedData) => {
   try {
-    const res = await axios.put(`/chapters/${chapterId}`, updatedData);
+    const token = localStorage.getItem('token'); // <-- Add this line
+    const res = await axios.put(`${BASE_URL}/${chapterId}`, updatedData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data', // If you're sending FormData
+      },
+    });
     return { status: 'success', data: res.data };
   } catch (error) {
     return {
@@ -49,3 +55,4 @@ export const updateChapter = async (chapterId, updatedData) => {
     };
   }
 };
+

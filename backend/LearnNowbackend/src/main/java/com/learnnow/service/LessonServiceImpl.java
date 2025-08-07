@@ -49,27 +49,27 @@ public class LessonServiceImpl implements LessonService {
             .collect(Collectors.toList());
     }
 
-//    @Override
-//    public LessonResponseDTO updateLesson(Long lessonId, LessonRequestDTO dto) {
-//        Lesson lesson = lessonDao.findById(lessonId)
-//            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
-//
-//        lesson.setTitle(dto.getTitle());
-//        lesson.setContent(dto.getContent());
-//        lesson.setAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : lesson.isAvailable());
-//
-//        Lesson updated = lessonDao.save(lesson);
-//        return convertToDTO(updated);
-//    }
+    @Override
+    public LessonResponseDTO updateLesson(Long lessonId, LessonRequestDTO dto) {
+        Lesson lesson = lessonDao.findById(lessonId)
+            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
 
-//    @Override
-//    public void softDeleteLesson(Long lessonId) {
-//        Lesson lesson = lessonDao.findById(lessonId)
-//            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
-//
-//        lesson.setActive(false);
-//        lessonDao.save(lesson);
-//    }
+        lesson.setTitle(dto.getTitle());
+        lesson.setContent(dto.getContent());
+        lesson.setAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : lesson.isAvailable());
+
+        Lesson updated = lessonDao.save(lesson);
+        return convertToDTO(updated);
+    }
+
+    @Override
+    public void softDeleteLesson(Long lessonId) {
+        Lesson lesson = lessonDao.findById(lessonId)
+            .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+
+        lesson.setActive(false);
+        lessonDao.save(lesson);
+    }
 
     private LessonResponseDTO convertToDTO(Lesson lesson) {
         LessonResponseDTO dto = new LessonResponseDTO();

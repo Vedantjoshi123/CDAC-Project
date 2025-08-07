@@ -8,4 +8,8 @@ public interface ChapterService {
     List<ChapterResponseDTO> getChaptersByCourse(Long courseId);
 
 	ChapterResponseDTO addChapter(Long courseId, ChapterRequestDTO dto);
+
+	ChapterResponseDTO updateChapter(Long chapterId, ChapterRequestDTO dto);
+
+	void deleteChapter(Long chapterId);
 }

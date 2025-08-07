@@ -44,12 +44,6 @@ public class ChapterServiceImpl implements ChapterService {
         return saveOrUpdateChapter(chapter, dto);
     }
 
-//    @Override
-//    public ChapterResponseDTO updateChapter(Long chapterId, ChapterRequestDTO dto) {
-//        Chapter chapter = chapterDao.findById(chapterId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
-//        return saveOrUpdateChapter(chapter, dto);
-//    }
 
     private ChapterResponseDTO saveOrUpdateChapter(Chapter chapter, ChapterRequestDTO dto) {
         try {
@@ -123,13 +117,21 @@ public class ChapterServiceImpl implements ChapterService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public ChapterResponseDTO updateChapter(Long chapterId, ChapterRequestDTO dto) {
+        Chapter chapter = chapterDao.findById(chapterId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
+        return saveOrUpdateChapter(chapter, dto);
+    }
 
-//    @Override
-//    public void deleteChapter(Long chapterId) {
-//        Chapter chapter = chapterDao.findById(chapterId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
-//        chapter.setActive(false);
-//        chapterDao.save(chapter);
-//    }
+
+    @Override
+    public void deleteChapter(Long chapterId) {
+        Chapter chapter = chapterDao.findById(chapterId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chapter not found"));
+        chapter.setActive(false);
+        chapterDao.save(chapter);
+    }
+
 
 }

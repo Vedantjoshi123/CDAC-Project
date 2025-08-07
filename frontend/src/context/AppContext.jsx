@@ -115,25 +115,8 @@ const fetchUserEnrolledCourse = async () => {
     return (sum / ratings.length).toFixed(1);
   };
 
-  const calculateChapterTime = (chapter) => {
-    const time = chapter.chapterContent.reduce((sum, lecture) => sum + lecture.lectureDuration, 0);
-    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
-  };
 
-  const calculateCourseDuration = (course) => {
-    let total = 0;
-    course.courseContent.forEach((chapter) => {
-      total += chapter.chapterContent.reduce((sum, lecture) => sum + lecture.lectureDuration, 0);
-    });
-    return humanizeDuration(total * 60 * 1000, { units: ["h", "m"] });
-  };
-
-  const calculateNoOfLectures = (course) => {
-    return course.courseContent.reduce((total, chapter) => {
-      return total + (Array.isArray(chapter.chapterContent) ? chapter.chapterContent.length : 0);
-    }, 0);
-  };
-
+  
   useEffect(() => {
     if (token) {
       fetchAllCourses();
@@ -150,9 +133,6 @@ const fetchUserEnrolledCourse = async () => {
     enrolledCourses,
     fetchUserEnrolledCourse,
     calculateRating,
-    calculateChapterTime,
-    calculateCourseDuration,
-    calculateNoOfLectures,
     user,
     token,
     login,
