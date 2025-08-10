@@ -76,7 +76,6 @@ public class AuthService {
             throw new ApiException("Invalid role: " + dto.getUserRole());
     }
 
-        // Set common fields
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
@@ -87,10 +86,8 @@ public class AuthService {
 
         userEntityDao.save(user);
 
-        // Generate JWT token
         String token = jwtUtils.generateToken(user);
 
-        // Prepare response DTO
         UserEntityResponseDTO userDto = mapper.map(user, UserEntityResponseDTO.class);
 
         LoginResponseDTO response = new LoginResponseDTO();

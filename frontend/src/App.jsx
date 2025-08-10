@@ -34,8 +34,7 @@ import ContactUs from './pages/common/ContactUs';
 import AboutUsSection from './pages/common/AboutUs';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentCourses from './pages/student/StudentCourses';
-import StudentProfile from './pages/student/StudentProfile';
-import StudentSettings from './pages/student/StudentSettings';
+import UpdateStudent from './pages/student/UpdateStudent';
 
 
 const App = () => {
@@ -85,8 +84,7 @@ const App = () => {
             <Route index element={<StudentDashboard />} />
             <Route path="student-dashboard" element={<StudentDashboard />} />
             <Route path="student-courses" element={<StudentCourses />} />
-            <Route path="student-profile" element={<StudentProfile />} />
-            <Route path="student-settings" element={<StudentSettings />} />
+            <Route path="student-profile" element={<UpdateStudent />} />
             <Route path="my-enrollments" element={<MyEnrollments />} />
           </Route>
 

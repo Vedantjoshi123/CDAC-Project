@@ -4,11 +4,13 @@ import { AppContext } from '../../context/AppContext';
 import Loading from '../../components/student/Loading';
 import { assets } from '../../assets/assets';
 import Youtube from 'react-youtube';
-import { getAverageRating } from '../../services/feedbackService';
+import { getAverageRating, getFeedback } from '../../services/feedbackService';
+import { addFeedback } from '/src/services/feedbackService.js';
 import { config } from '../../services/config';
 import { getTeacherById } from '../../services/teacherService';
 import { getChaptersByCourse } from '../../services/chapterService';
 import { FaArrowLeft } from 'react-icons/fa';
+import { enrollCourse, checkEnrollment } from '../../services/purchaseService';
 
 const extractYouTubeVideoId = (url) => {
   try {
@@ -43,11 +45,23 @@ const CourseDetails = () => {
   const [videoLoading, setVideoLoading] = useState(true);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [currentChapterTitle, setCurrentChapterTitle] = useState('');
+  const [enrollLoading, setEnrollLoading] = useState(false);
+  const [enrollError, setEnrollError] = useState(null);
+
+  // Feedback related state
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState(null);
+  const [ratingInput, setRatingInput] = useState(0); // 1..5
+  const [commentInput, setCommentInput] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [userHasSubmitted, setUserHasSubmitted] = useState(false);
 
   const {
     fetchAllCourses,
     allCourses,
-    currency
+    currency,
+    user
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -69,8 +83,12 @@ const CourseDetails = () => {
         courseRatings: found.courseRatings || [],
         createdOn: found.createdOn || null,
       });
+      // Get average rating (service may return number or response.data)
       getAverageRating(found.id)
-        .then(setAverageRating)
+        .then((res) => {
+          const avg = (res && typeof res === 'object' && res.data !== undefined) ? res.data : res;
+          setAverageRating(Number(avg || 0));
+        })
         .catch(() => setAverageRating(0));
 
       if (found.teacherId) {
@@ -91,13 +109,56 @@ const CourseDetails = () => {
     const fetchChapters = async () => {
       try {
         const response = await getChaptersByCourse(id);
-        setChapters(response.data || []);
+        const data = response?.data ?? response;
+        setChapters(data || []);
       } catch (error) {
         console.error('Error fetching chapters:', error);
       }
     };
     fetchChapters();
   }, [id]);
+
+  useEffect(() => {
+    if (!user || !id) return;
+    const checkUserEnrollment = async () => {
+      try {
+        const enrolled = await checkEnrollment(user.id, id);
+        const val = enrolled?.data ?? enrolled;
+        setIsAlreadyEnrolled(Boolean(val));
+      } catch (error) {
+        console.error('Error checking enrollment:', error);
+        setIsAlreadyEnrolled(false);
+      }
+    };
+    checkUserEnrollment();
+  }, [user, id]);
+
+  // Fetch feedbacks for this course
+  const fetchFeedbacks = async () => {
+    if (!id) return;
+    setFeedbackLoading(true);
+    setFeedbackError(null);
+    try {
+      const response = await getFeedback(id);
+      const data = response?.data ?? response;
+      setFeedbacks(Array.isArray(data) ? data : []);
+      // detect if current user already submitted feedback (if studentId present in DTO)
+      if (user && Array.isArray(data)) {
+        const already = data.some(f => String(f.studentId) === String(user.id));
+        setUserHasSubmitted(already);
+      }
+    } catch (err) {
+      console.error('Error loading feedbacks', err);
+      setFeedbackError('Failed to load feedbacks');
+      setFeedbacks([]);
+    } finally {
+      setFeedbackLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeedbacks();
+  }, [id, user, isAlreadyEnrolled]);
 
   const toggleSection = (index) => {
     setOpenSections(prev => ({ ...prev, [index]: !prev[index] }));
@@ -117,13 +178,95 @@ const CourseDetails = () => {
       : description;
   };
 
+  const handleEnroll = async () => {
+    if (!user) {
+      toast.error("You must be logged in to enroll");
+      return;
+    }
+    setEnrollLoading(true);
+    setEnrollError(null);
+    try {
+      const result = await enrollCourse(user.id, id);
+      const data = result?.data ?? result;
+      if (data?.status === 'success' || data === 'success' || result.status === 'success') {
+        setIsAlreadyEnrolled(true);
+        toast.success('Enrollment successful!');
+        // refresh feedbacks (maybe now they can submit)
+        fetchFeedbacks();
+      } else {
+        const msg = data?.message || result?.message || 'Enrollment failed';
+        setEnrollError(msg);
+      }
+    } catch (error) {
+      setEnrollError(error.message || 'Enrollment failed');
+    } finally {
+      setEnrollLoading(false);
+    }
+  };
+
+const handleSubmitFeedback = async () => {
+  if (!user) {
+    toast.error('Please login to submit feedback.');
+    return;
+  }
+  if (!isAlreadyEnrolled) {
+    toast.error('Only students who purchased the course can submit feedback.');
+    return;
+  }
+  if (ratingInput < 1 || ratingInput > 5) {
+    toast.error('Please select a rating (1 to 5 stars).');
+    return;
+  }
+  if (!commentInput || commentInput.trim().length < 5) {
+    toast.error('Please enter a comment (at least 5 characters).');
+    return;
+  }
+
+  setFeedbackSubmitting(true);
+  try {
+    const feedbackData = {
+      studentId: user.id,
+      rating: ratingInput,
+      comment: commentInput.trim(),
+    };
+
+    const response = await addFeedback(Number(id), feedbackData);
+
+    // Refresh feedbacks and average rating
+    await fetchFeedbacks();
+    const avgResp = await getAverageRating(id);
+    const avg = avgResp?.data ?? avgResp;
+    setAverageRating(Number(avg || 0));
+    setCommentInput('');
+    setRatingInput(0);
+    setUserHasSubmitted(true);
+    toast.success('Thank you for your feedback!');
+  } catch (err) {
+    console.error('Error submitting feedback', err);
+    toast.error('Failed to submit feedback. Please try again later.');
+  } finally {
+    setFeedbackSubmitting(false);
+  }
+};
+
+
+  const handleStarClick = (star) => {
+    setRatingInput(star);
+  };
+
+  // Navigate to quiz page (only for enrolled students)
+  const handleSolveQuiz = () => {
+    // adjust route as per your app routing
+    navigate(`/courses/${id}/quiz`);
+  };
+
   return courseData ? (
     <div className="relative bg-background dark:bg-darkBackground text-gray-800 dark:text-gray-200 pt-20 md:px-36 px-6">
       <div className="absolute top-0 left-0 w-full h-[300px] -z-10 bg-gradient-to-b from-cyan-100/70 dark:from-gray-800"></div>
 
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 flex items-center gap-2 text-sm text-white-600 hover:underline"
+        className="mb-6 flex items-center gap-2 text-sm text-white-600 bg-var(--color-bg)"
       >
         <FaArrowLeft className="w-4 h-4" />
         Back
@@ -202,35 +345,59 @@ const CourseDetails = () => {
 
                   <div className={`overflow-hidden transition-all duration-300 ${openSections[index] ? 'max-h-96' : 'max-h-0'}`}>
                     <ul className="pl-5 pr-4 py-2 text-gray-600 dark:text-gray-300 border-t border-gray-300 dark:border-gray-600">
-                      {chapter.lessons?.map((lesson) => (
-                        <li key={lesson.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-1">
-                          <div className="flex gap-2 items-start">
-                            <img src={assets.play_icon} alt="play" className="w-4 h-4 mt-1" />
-                            <div>
-                              <p className="text-sm md:text-base">{lesson.title}</p>
-                              <p className="text-xs text-gray-400">Published on: {formatDate(lesson.createdOn)}</p>
-                            </div>
-                          </div>
-                          {lesson.available && (
-                            <p
-                              className="text-blue-500 dark:text-blue-400 text-sm cursor-pointer"
-                              onClick={() => {
-                                const videoId = extractYouTubeVideoId(lesson.content);
-                                if (videoId) {
-                                  setPlayerData({ videoId });
-                                  setVideoLoading(true);
-                                  setCurrentLesson(lesson);
-                                  setCurrentChapterTitle(chapter.title);
-                                } else {
-                                  alert('Invalid video URL');
-                                }
-                              }}
-                            >
-                              Preview
-                            </p>
-                          )}
-                        </li>
-                      ))}
+                      
+                     {chapter.lessons?.map((lesson) => {
+  // Decide if lesson is visible to the user
+  const canViewLesson = isAlreadyEnrolled || lesson.available;
+
+  if (!canViewLesson) {
+    // If not allowed, show lesson title but no preview button or a disabled preview
+    return (
+      <li key={lesson.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-1 opacity-50 cursor-not-allowed">
+        <div className="flex gap-2 items-start">
+          <img src={assets.play_icon} alt="play" className="w-4 h-4 mt-1" />
+          <div>
+            <p className="text-sm md:text-base">{lesson.title} (Restricted)</p>
+            <p className="text-xs text-gray-400">Published on: {formatDate(lesson.createdOn)}</p>
+          </div>
+        </div>
+        <p className="text-sm text-gray-400 cursor-not-allowed select-none">Locked</p>
+      </li>
+    );
+  }
+
+  return (
+    <li key={lesson.id} className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-1">
+      <div className="flex gap-2 items-start">
+        <img src={assets.play_icon} alt="play" className="w-4 h-4 mt-1" />
+        <div>
+          <p className="text-sm md:text-base">{lesson.title}</p>
+          <p className="text-xs text-gray-400">Published on: {formatDate(lesson.createdOn)}</p>
+        </div>
+      </div>
+      {lesson.content && (
+        <p
+          className="text-blue-500 dark:text-blue-400 text-sm cursor-pointer"
+          onClick={() => {
+            const videoId = extractYouTubeVideoId(lesson.content);
+            if (videoId) {
+              setPlayerData({ videoId });
+              setVideoLoading(true);
+              setCurrentLesson(lesson);
+              setCurrentChapterTitle(chapter.title);
+            } else {
+              toast.error('Invalid video URL');
+            }
+          }}
+        >
+          watch
+        </p>
+      )}
+    </li>
+  );
+})}
+
+
                     </ul>
                   </div>
                 </div>
@@ -245,6 +412,108 @@ const CourseDetails = () => {
               className="pt-4 prose prose-sm md:prose-base max-w-none dark:prose-invert prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-li:marker:text-gray-500"
               dangerouslySetInnerHTML={{ __html: courseData.courseDescription }}
             ></div>
+          </div>
+
+          {/* Feedback Section */}
+          <div className="pt-10">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Student Feedback</h3>
+
+            <div className="mt-4">
+              <div className="flex items-center gap-3">
+                <p className="text-2xl font-semibold">{averageRating.toFixed(1)}</p>
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <img key={i} src={i < Math.round(averageRating) ? assets.star : assets.star_blank} alt="star" className="w-4 h-4" />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 ml-2">({feedbacks.length} reviews)</p>
+              </div>
+
+              {/* Feedback list */}
+              <div className="mt-4 space-y-3">
+                {feedbackLoading && <p className="text-gray-500">Loading feedbacks...</p>}
+                {feedbackError && <p className="text-red-500">{feedbackError}</p>}
+                {!feedbackLoading && feedbacks.length === 0 && (
+                  <p className="text-gray-500">No feedback yet. Be the first to review this course!</p>
+                )}
+                {!feedbackLoading && feedbacks.map((f) => (
+                  <div key={f.id || `${f.studentId}-${f.courseId}`} className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-sm">
+                          {f.studentName || f.studentFullName || `Student #${f.studentId}`}
+                        </p>
+                        <p className="text-xs text-gray-400">{formatDate(f.createdOn || f.updatedOn)}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <img key={i} src={i < f.rating ? assets.star : assets.star_blank} alt="star" className="w-4 h-4" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">{f.comment}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Feedback form (only for enrolled students) */}
+            <div className="mt-6">
+              {isAlreadyEnrolled ? (
+                userHasSubmitted ? (
+                  <p className="text-sm text-gray-500">You have already submitted feedback for this course. Thank you!</p>
+                ) : (
+                  <div className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded">
+                    <h4 className="font-semibold">Leave a review</h4>
+                    <p className="text-sm text-gray-500 mt-1">Select stars and write your thoughts about the course.</p>
+
+                    <div className="mt-3">
+                      <div className="flex items-center gap-2">
+                        {[1,2,3,4,5].map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => handleStarClick(s)}
+                            className={`p-1 rounded ${ratingInput >= s ? 'scale-105' : ''} bg-transparent hover:bg-transparent`}
+                            aria-label={`${s} star`}
+                          >
+                            <img src={ratingInput >= s ? assets.star : assets.star_blank} alt={`${s} star`} className="w-6 h-6" />
+                          </button>
+                        ))}
+                      </div>
+
+                      <textarea
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
+                        rows={4}
+                        className="mt-3 w-full p-2 border rounded bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-sm"
+                        placeholder="Write your review..."
+                      />
+
+                      <div className="flex items-center gap-3 mt-3">
+                        <button
+                          onClick={handleSubmitFeedback}
+                          disabled={feedbackSubmitting}
+                          className={`px-4 py-2 rounded font-semibold text-white ${feedbackSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                        >
+                          {feedbackSubmitting ? 'Submitting...' : 'Submit Review'}
+                        </button>
+
+                        <button
+                          onClick={() => { setRatingInput(0); setCommentInput(''); }}
+                          type="button"
+                          className="px-3 py-2 rounded text-sm border border-gray-300 dark:border-gray-600"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <p className="text-sm text-gray-500">Only students who purchased the course can leave feedback.</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -313,9 +582,35 @@ const CourseDetails = () => {
               </div>
             </div>
 
-            <button className="mt-6 w-full py-3 rounded text-white font-medium transition bg-[var(--color-primary)] hover:bg-[#005B3B]">
-              {isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}
-            </button>
+            {/* Enrollment Button or Message */}
+            {isAlreadyEnrolled ? (
+              <>
+                <div className="text-green-600 dark:text-green-400 font-semibold text-center py-3">
+                  You are enrolled in this course.
+                </div>
+
+                {/* Solve Quiz button visible only to enrolled students */}
+                <button
+                  onClick={handleSolveQuiz}
+                  className="w-full mt-3 px-4 py-2 rounded-md font-semibold text-white bg-indigo-600 hover:bg-indigo-700"
+                >
+                  Solve Quiz
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleEnroll}
+                disabled={enrollLoading}
+                className={`w-full px-4 py-2 rounded-md font-semibold text-white ${
+                  enrollLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                {enrollLoading ? 'Enrolling...' : `Enroll Now`}
+              </button>
+            )}
+            {enrollError && (
+              <p className="text-red-600 dark:text-red-400 mt-2 text-sm text-center">{enrollError}</p>
+            )}
           </div>
         </div>
       </div>
