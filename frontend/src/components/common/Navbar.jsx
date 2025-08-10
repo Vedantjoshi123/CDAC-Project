@@ -12,7 +12,6 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(user);
 
-  // Sync context user with localStorage when component mounts or changes
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -30,24 +29,23 @@ const Navbar = () => {
     navigate('/');
   };
 
- const navLinks = () => {
-  if (!currentUser) return null;
+  const navLinks = () => {
+    if (!currentUser) return null;
 
-  switch (currentUser.userRole?.toUpperCase()) {
-    case 'STUDENT':
-      return <Link to="/student">Student Dashboard</Link>; // 👈 updated route
-    case 'TEACHER':
-      return <Link to="/teacher">Teacher Dashboard</Link>;
-    case 'ADMIN':
-      return <Link to="/admin">Admin Dashboard</Link>;
-    default:
-      return null;
-  }
-};
-
+    switch (currentUser.userRole?.toUpperCase()) {
+      case 'STUDENT':
+        return <Link to="/student">Student Dashboard</Link>;
+      case 'TEACHER':
+        return <Link to="/teacher">Teacher Dashboard</Link>;
+      case 'ADMIN':
+        return <Link to="/admin">Admin Dashboard</Link>;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="py-4 px-6 md:px-14 lg:px-32 flex items-center justify-between bg-[var(--color-bg)]">
+    <div className="sticky top-0 z-50 py-4 px-6 md:px-14 lg:px-32 flex items-center justify-between bg-[var(--color-bg)] shadow-sm">
       {/* Logo */}
       <Link to="/">
         <img src={assets.logo} alt="Logo" className="w-28 lg:w-32 cursor-pointer" />
@@ -77,7 +75,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-20 left-0 w-full z-50 px-4 py-4 flex flex-col gap-3 bg-[var(--color-bg)] md:hidden text-[var(--color-text-secondary)]">
+        <div className="fixed top-20 left-0 right-0 z-50 px-4 py-4 flex flex-col gap-3 bg-[var(--color-bg)] md:hidden text-[var(--color-text-secondary)] shadow-lg">
           {navLinks()}
           <div className="flex justify-between items-center">
             <ThemeToggle />
