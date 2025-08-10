@@ -92,3 +92,16 @@ export async function deleteStudent(studentId) {
     };
   }
 }
+
+export async function getEnrolledCoursesByStudentId(studentId) {
+  if (!studentId) throw new Error("Student ID is required");
+
+  try {
+    const url = `${config.serverUrl}/purchases/student/${studentId}`;
+    const response = await axios.get(url, authHeader());
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching enrolled courses:", error.response?.data || error.message);
+    throw error;
+  }
+}

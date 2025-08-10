@@ -12,8 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
     	Path uploadPath = Paths.get(System.getProperty("user.dir"))
-                .getParent() // gets 'backend'
-                .getParent() // gets 'CDAC-Project'
+                .getParent() 
+                .getParent() 
                 .resolve("uploads")
                 .toAbsolutePath();
 

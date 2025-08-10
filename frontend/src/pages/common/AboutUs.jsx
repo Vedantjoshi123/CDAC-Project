@@ -27,7 +27,7 @@ const teamMembers = [
   },
   {
     name: "Abhishek Athare",
-    image: "src/assets/abhishek.jpeg",
+    image: "src/assets/abhishek.jpg",
     links: {
       linkedin: "https://www.linkedin.com/in/abhishekathare2002/",
       github: "https://github.com/AbhishekAthare"

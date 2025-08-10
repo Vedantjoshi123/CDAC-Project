@@ -30,7 +30,6 @@ public class JwtUtils {
 
 	    @PostConstruct
 	    public void init() {
-	        // Decode the Base64-encoded secret key
 	        byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
 	        this.key = Keys.hmacShaKeyFor(decodedKey);
 	    }
@@ -38,7 +37,7 @@ public class JwtUtils {
 	    public String generateToken(UserEntity user) {
 	        return Jwts.builder()
 	                .setSubject(user.getEmail())
-	                .claim("role", user.getUserRole().name())  // Optional claim
+	                .claim("role", user.getUserRole().name())  
 	                .setIssuedAt(new Date())
 	                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
 	                .signWith(key, SignatureAlgorithm.HS512)

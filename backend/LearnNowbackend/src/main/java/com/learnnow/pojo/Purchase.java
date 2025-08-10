@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -28,4 +30,12 @@ public class Purchase extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime purchaseDate;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PurchaseStatus status = PurchaseStatus.ACTIVE;
+
+    private Double amountPaid;
+
+    private String paymentReference;
 }

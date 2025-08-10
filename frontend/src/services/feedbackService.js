@@ -31,7 +31,8 @@ export async function addFeedback(courseId, feedbackData) {
 
   try {
     const url = `${config.serverUrl}/feedbacks`;
-    const response = await axios.post(url, feedbackData, authHeader());
+      const body = { ...feedbackData, courseId };
+    const response = await axios.post(url, body, authHeader());
     return response.data;
   } catch (error) {
     console.error('Error adding feedback:', error);
